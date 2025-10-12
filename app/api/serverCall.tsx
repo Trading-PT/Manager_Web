@@ -1,5 +1,7 @@
 // API 호출 공통 규격 정의하여 재활용
 import { getXsrfToken, updateXsrfTokenFromResponse } from '../utils/xsrfToken';
+import { getIsMockMode } from '../contexts/MockDataContext';
+import * as mockData from './mockData';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URI || 'https://dev.tradingpt.shop';
 
@@ -109,6 +111,17 @@ export async function adminLogin(
 
 // 신규 가입자 목록 조회 (UID 검토 중)
 export async function getPendingUsers(): Promise<ApiResponse<any>> {
+  if (getIsMockMode()) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: mockData.mockPendingUsers,
+        });
+      }, 300);
+    });
+  }
+
   return apiCall('/admin/api/v1/users/pending', {
     method: 'GET',
   });
@@ -132,6 +145,17 @@ export async function getAdminConsultations(params?: {
   page?: number;
   size?: number;
 }): Promise<ApiResponse<any>> {
+  if (getIsMockMode()) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: mockData.mockConsultations,
+        });
+      }, 300);
+    });
+  }
+
   const queryParams = new URLSearchParams();
   if (params?.page !== undefined) queryParams.append('page', String(params.page));
   if (params?.size !== undefined) queryParams.append('size', String(params.size));
@@ -182,6 +206,17 @@ export async function deleteConsultationBlock(blockId: number): Promise<ApiRespo
 
 // 트레이너가 담당하는 고객 조회
 export async function getManagedCustomers(): Promise<ApiResponse<any>> {
+  if (getIsMockMode()) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: mockData.mockManagedCustomers,
+        });
+      }, 300);
+    });
+  }
+
   return apiCall('/api/v1/trainers/me/managed_customers/evaluations', {
     method: 'GET',
   });
@@ -221,6 +256,17 @@ export async function getAdminComplaints(params?: {
   page?: number;
   size?: number;
 }): Promise<ApiResponse<any>> {
+  if (getIsMockMode()) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: mockData.mockComplaints,
+        });
+      }, 300);
+    });
+  }
+
   const queryParams = new URLSearchParams();
   if (params?.page !== undefined) queryParams.append('page', String(params.page));
   if (params?.size !== undefined) queryParams.append('size', String(params.size));
@@ -233,6 +279,25 @@ export async function getAdminComplaints(params?: {
 
 // 민원 단건 조회 (관리자)
 export async function getAdminComplaint(complaintId: number): Promise<ApiResponse<any>> {
+  if (getIsMockMode()) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const complaint = mockData.mockComplaintDetail(complaintId);
+        if (complaint) {
+          resolve({
+            success: true,
+            data: complaint,
+          });
+        } else {
+          resolve({
+            success: false,
+            error: 'Complaint not found',
+          });
+        }
+      }, 300);
+    });
+  }
+
   return apiCall(`/api/v1/admin/complaints/${complaintId}`, {
     method: 'GET',
   });

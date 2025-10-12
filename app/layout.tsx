@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { MockDataProvider } from "./contexts/MockDataContext";
 
 // 운영자 사이트는 네이버 등 검색 엔진에 등록하지 않습니다!
 export const metadata: Metadata = {
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <MockDataProvider>
+          {children}
+        </MockDataProvider>
       </body>
     </html>
   );

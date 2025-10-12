@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
+import { useMockData } from '../contexts/MockDataContext';
 
 interface MenuItem {
   name: string;
@@ -11,6 +12,7 @@ interface MenuItem {
 export default function AdminHeader() {
   const router = useRouter();
   const pathname = usePathname();
+  const { isMockMode, toggleMockMode } = useMockData();
 
   const menuItems: MenuItem[] = [
     { name: '고객관리', path: '/admin/customers' },
@@ -30,8 +32,8 @@ export default function AdminHeader() {
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-[1920px] mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* 좌측 로고 */}
-          <div className="flex items-center">
+          {/* 좌측 로고 및 Mock 데이터 토글 */}
+          <div className="flex items-center gap-4">
             <div className="cursor-pointer" onClick={() => router.push('/admin')}>
               <Image
                 src="/images/logo_small.png"
@@ -41,6 +43,19 @@ export default function AdminHeader() {
                 className="object-contain"
               />
             </div>
+
+            {/* Mock 데이터 토글 버튼 */}
+            <button
+              onClick={toggleMockMode}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                isMockMode
+                  ? 'bg-orange-500 text-white hover:bg-orange-600'
+                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+              }`}
+              title={isMockMode ? 'Mock 데이터 사용 중' : '실제 데이터 사용 중'}
+            >
+              {isMockMode ? '🔧 Mock' : '📡 Real'}
+            </button>
           </div>
 
           {/* 중앙 메뉴 */}
