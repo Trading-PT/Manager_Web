@@ -32,6 +32,12 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.claude
+.gitignore
+analyze_api_docs.py
+api-docs.json
+CLAUDE.local.md
+claude-docs
 
 # vercel
 .vercel
