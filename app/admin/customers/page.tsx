@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminHeader from '../../components/AdminHeader';
 import CustomButton from '../../components/CustomButton';
 import CustomModal from '../../components/CustomModal';
+import * as api from '../../api/serverCall';
 
 // 임시 데이터 타입
 interface NewUser {
@@ -12,6 +13,7 @@ interface NewUser {
   phone: string;
   registeredAt: string;
   approvalStatus: '승인 대기 중' | '승인' | '승인 불가';
+  uid?: string;
 }
 
 interface Consultation {
@@ -47,53 +49,155 @@ export default function CustomersPage() {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState('');
   const [showMyCustomersOnly, setShowMyCustomersOnly] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [currentConsultationId, setCurrentConsultationId] = useState<number | null>(null);
+  const [memoText, setMemoText] = useState('');
 
-  // 임시 데이터
-  const [newUsers, setNewUsers] = useState<NewUser[]>([
-    { id: 1, name: '홍길동', phone: '010-1234-5678', registeredAt: '2025.8.12.23:37:12', approvalStatus: '승인 대기 중' },
-    { id: 2, name: '김철수', phone: '010-2345-6789', registeredAt: '2025.8.13.10:20:30', approvalStatus: '승인' },
-  ]);
+  // 데이터 상태
+  const [newUsers, setNewUsers] = useState<NewUser[]>([]);
 
-  const [consultations, setConsultations] = useState<Consultation[]>([
-    { id: 1, name: '김개똥', phone: '010-1234-5678', requestedAt: '2025.6.15.1:50', consultationDate: '2025년 8월 3일 13시 50분', isCompleted: false, hasMemo: true },
-    { id: 2, name: '이영희', phone: '010-3456-7890', requestedAt: '2025.6.16.14:30', consultationDate: '2025년 8월 4일 15시 00분', isCompleted: true, hasMemo: true },
-  ]);
-
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([
-    { id: 1, name: '김개똥', phone: '010-1234-5678', levelTestStatus: '미응시', hasConsultation: true, hasMemo: true, trainer: '' },
-    { id: 2, name: '박민수', phone: '010-4567-8901', levelTestStatus: 'C (트레이너: 이코치)', hasConsultation: false, hasMemo: true, trainer: '이코치' },
-  ]);
-
-  const [allCustomers, setAllCustomers] = useState<AllCustomer[]>([
-    { id: 1, name: '김개똥', phone: '010-1234-5678', investmentType: '스윙', lastLTResult: 'C / 답안지 보기', trainer: '이코치' },
-    { id: 2, name: '이영희', phone: '010-2345-6789', investmentType: '데이', lastLTResult: 'A / 답안지 보기', trainer: '박코치' },
-    { id: 3, name: '박민수', phone: '010-3456-7890', investmentType: '스켈핑', lastLTResult: '내역 없음', trainer: '김코치' },
-  ]);
+  const [consultations, setConsultations] = useState<Consultation[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [allCustomers, setAllCustomers] = useState<AllCustomer[]>([]);
 
   // 통계 데이터
-  const statistics = {
-    consultationRequested: 99,
-    levelTested: 99,
-    nonSubscribed: 99,
-    subscribed: 30,
-    unsubscribed: 30,
+  const [statistics, setStatistics] = useState({
+    consultationRequested: 0,
+    levelTested: 0,
+    nonSubscribed: 0,
+    subscribed: 0,
+    unsubscribed: 0,
+  });
+
+  // 초기 데이터 로드
+  useEffect(() => {
+    loadPendingUsers();
+    loadConsultations();
+    loadManagedCustomers();
+  }, []);
+
+  // 신규 가입자 목록 로드
+  const loadPendingUsers = async () => {
+    setLoading(true);
+    const response = await api.getPendingUsers();
+    if (response.success && response.data) {
+      // API 응답 데이터를 UI 형식으로 변환
+      const users = response.data.map((user: any) => ({
+        id: user.userId || user.id,
+        name: user.name || user.username,
+        phone: user.phone || user.phoneNumber,
+        registeredAt: user.createdAt || user.registeredAt,
+        approvalStatus: user.status === 'PENDING' ? '승인 대기 중' :
+                       user.status === 'APPROVED' ? '승인' : '승인 불가',
+        uid: user.uid || user.userId || user.id?.toString() || '-',
+      }));
+      setNewUsers(users);
+    }
+    setLoading(false);
   };
 
-  const handleApprovalChange = (id: number, newStatus: NewUser['approvalStatus']) => {
-    setNewUsers(prev => prev.map(user =>
-      user.id === id ? { ...user, approvalStatus: newStatus } : user
-    ));
+  // 상담 목록 로드
+  const loadConsultations = async () => {
+    const response = await api.getAdminConsultations();
+    if (response.success && response.data) {
+      const consultationList = response.data.map((consultation: any) => ({
+        id: consultation.consultationId || consultation.id,
+        name: consultation.customerName || consultation.name,
+        phone: consultation.phone || consultation.phoneNumber,
+        requestedAt: consultation.requestedAt || consultation.createdAt,
+        consultationDate: consultation.consultationDate || consultation.scheduledDate,
+        isCompleted: consultation.status === 'COMPLETED' || consultation.isCompleted,
+        hasMemo: !!consultation.memo,
+        memo: consultation.memo,
+      }));
+      setConsultations(consultationList);
+    }
   };
 
-  const handleConsultationToggle = (id: number) => {
-    setConsultations(prev => prev.map(consultation =>
-      consultation.id === id ? { ...consultation, isCompleted: !consultation.isCompleted } : consultation
-    ));
+  // 담당 고객 목록 로드
+  const loadManagedCustomers = async () => {
+    const response = await api.getManagedCustomers();
+    if (response.success && response.data) {
+      const customers = response.data.map((customer: any) => ({
+        id: customer.customerId || customer.id,
+        name: customer.name || customer.customerName,
+        phone: customer.phone || customer.phoneNumber,
+        investmentType: customer.investmentType || '스윙',
+        lastLTResult: customer.lastLevelTest || '내역 없음',
+        trainer: customer.trainerName || customer.trainer || '',
+        levelTestStatus: customer.levelTestStatus || '미응시',
+        hasConsultation: customer.hasConsultation || false,
+        hasMemo: !!customer.memo,
+      }));
+      setAllCustomers(customers);
+
+      // 신규 구독 고객도 같은 데이터로 필터링 (예: 최근 30일 이내)
+      setSubscriptions(customers.slice(0, 10)); // 임시로 최근 10명
+    }
   };
 
-  const handleShowMemo = (memo: string) => {
-    setModalContent(memo);
+  const handleApprovalChange = async (id: number, newStatus: NewUser['approvalStatus']) => {
+    const apiStatus = newStatus === '승인' ? 'APPROVED' :
+                     newStatus === '승인 불가' ? 'REJECTED' : 'PENDING';
+
+    const response = await api.updateUserStatus(id, apiStatus as 'APPROVED' | 'REJECTED');
+
+    if (response.success) {
+      setNewUsers(prev => prev.map(user =>
+        user.id === id ? { ...user, approvalStatus: newStatus } : user
+      ));
+      alert('승인 상태가 업데이트되었습니다.');
+    } else {
+      alert(`오류: ${response.error}`);
+    }
+  };
+
+  const handleConsultationToggle = async (id: number) => {
+    const consultation = consultations.find(c => c.id === id);
+    if (!consultation) return;
+
+    if (!consultation.isCompleted) {
+      // 상담 수락
+      const response = await api.acceptConsultation(id);
+      if (response.success) {
+        setConsultations(prev => prev.map(c =>
+          c.id === id ? { ...c, isCompleted: true } : c
+        ));
+        alert('상담이 수락되었습니다.');
+      } else {
+        alert(`오류: ${response.error}`);
+      }
+    } else {
+      // 체크 해제는 로컬에서만 처리
+      setConsultations(prev => prev.map(c =>
+        c.id === id ? { ...c, isCompleted: false } : c
+      ));
+    }
+  };
+
+  const handleShowMemo = (consultationId: number, memo: string) => {
+    setCurrentConsultationId(consultationId);
+    setMemoText(memo || '');
     setShowModal(true);
+  };
+
+  const handleSaveMemo = async () => {
+    if (currentConsultationId === null) return;
+
+    const response = await api.updateConsultationMemo(currentConsultationId, memoText);
+    if (response.success) {
+      alert('메모가 저장되었습니다.');
+      setShowModal(false);
+      loadConsultations(); // 새로고침
+    } else {
+      alert(`오류: ${response.error}`);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setCurrentConsultationId(null);
+    setMemoText('');
   };
 
   const handleInvestmentTypeChange = (id: number, newType: string) => {
@@ -119,6 +223,13 @@ export default function CustomersPage() {
       <AdminHeader />
 
       <main className="max-w-[1920px] mx-auto px-6 py-8">
+        {loading && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6">
+              <p className="text-lg font-medium">로딩 중...</p>
+            </div>
+          </div>
+        )}
         {/* 1. 신규 가입자 UID 승인 처리 */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">신규 가입자 UID 승인 처리</h2>
@@ -135,16 +246,18 @@ export default function CustomersPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {newUsers.map((user) => (
+                  {newUsers.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                        신규 가입자가 없습니다.
+                      </td>
+                    </tr>
+                  ) : newUsers.map((user) => (
                     <tr key={user.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.phone}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.registeredAt}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                          조회하기
-                        </button>
-                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">{user.uid}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <select
                           value={user.approvalStatus}
@@ -184,7 +297,13 @@ export default function CustomersPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {consultations.map((consultation) => (
+                  {consultations.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                        신규 상담 신청이 없습니다.
+                      </td>
+                    </tr>
+                  ) : consultations.map((consultation) => (
                     <tr key={consultation.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{consultation.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{consultation.phone}</td>
@@ -200,7 +319,7 @@ export default function CustomersPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
-                          onClick={() => handleShowMemo('상담 메모 내용')}
+                          onClick={() => handleShowMemo(consultation.id, (consultation as any).memo || '')}
                           className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                         >
                           메모 보기
@@ -231,7 +350,13 @@ export default function CustomersPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {subscriptions.map((sub) => (
+                  {subscriptions.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                        신규 구독 고객이 없습니다.
+                      </td>
+                    </tr>
+                  ) : subscriptions.map((sub) => (
                     <tr key={sub.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{sub.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -326,7 +451,13 @@ export default function CustomersPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {allCustomers.map((customer) => (
+                  {allCustomers.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                        구독 고객이 없습니다.
+                      </td>
+                    </tr>
+                  ) : allCustomers.map((customer) => (
                     <tr key={customer.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{customer.name}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{customer.phone}</td>
@@ -375,10 +506,29 @@ export default function CustomersPage() {
 
       {/* 모달 */}
       {showModal && (
-        <CustomModal onClose={() => setShowModal(false)}>
+        <CustomModal onClose={handleCloseModal}>
           <div className="p-6">
             <h3 className="text-lg font-bold mb-4">상담 메모</h3>
-            <p className="text-gray-700">{modalContent}</p>
+            <textarea
+              className="w-full min-h-[200px] p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="ex) 상담 시간 변경, 고객 노쇼"
+              value={memoText}
+              onChange={(e) => setMemoText(e.target.value)}
+            />
+            <div className="flex justify-end gap-3 mt-4">
+              <CustomButton
+                variant="secondary"
+                onClick={handleCloseModal}
+              >
+                취소
+              </CustomButton>
+              <CustomButton
+                variant="primary"
+                onClick={handleSaveMemo}
+              >
+                저장
+              </CustomButton>
+            </div>
           </div>
         </CustomModal>
       )}
