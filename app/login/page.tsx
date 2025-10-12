@@ -1,22 +1,58 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
+import { adminLogin } from '../api/serverCall';
+import { getXsrfTokenFromCookie, setXsrfToken } from '../utils/xsrfToken';
 
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
 
-    // TODO: API 연동 시 실제 인증 로직 추가
-    if (username && password) {
-      // 임시로 관리자 페이지로 이동
-      router.push('/admin');
+    try {
+      const response = await adminLogin({ username, password });
+
+      if (response.success && response.data) {
+        // 토큰이 있으면 저장 (추후 인증에 사용)
+        if (response.data.accessToken) {
+          localStorage.setItem('accessToken', response.data.accessToken);
+        }
+        if (response.data.refreshToken) {
+          localStorage.setItem('refreshToken', response.data.refreshToken);
+        }
+
+        // 로그인 성공 후 약간의 지연을 두고 쿠키에서 XSRF-TOKEN 읽기
+        // (브라우저가 set-cookie 헤더를 처리할 시간을 줌)
+        setTimeout(() => {
+          const xsrfToken = getXsrfTokenFromCookie();
+          if (xsrfToken) {
+            setXsrfToken(xsrfToken);
+            console.log('XSRF-TOKEN saved from cookie:', xsrfToken);
+          } else {
+            console.warn('XSRF-TOKEN not found in cookies');
+          }
+        }, 100);
+
+        // 로그인 성공 시 관리자 페이지로 이동
+        router.push('/admin');
+      } else {
+        setError(response.error || '로그인에 실패했습니다.');
+      }
+    } catch (err) {
+      setError('로그인 중 오류가 발생했습니다.');
+      console.error('Login error:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,13 +89,20 @@ export default function LoginPage() {
             />
           </div>
 
+          {error && (
+            <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded">
+              {error}
+            </div>
+          )}
+
           <div>
             <CustomButton
               type="submit"
               variant="primary"
               className="w-full"
+              disabled={isLoading}
             >
-              로그인
+              {isLoading ? '로그인 중...' : '로그인'}
             </CustomButton>
           </div>
         </form>
