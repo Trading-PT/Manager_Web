@@ -17,7 +17,7 @@ export default function CustomButton({
   disabled = false,
   className = '',
 }: CustomButtonProps) {
-  const baseStyles = 'px-6 py-3 rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles = 'px-6 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer';
 
   const variantStyles = {
     primary: 'bg-blue-600 text-white hover:bg-blue-700',
