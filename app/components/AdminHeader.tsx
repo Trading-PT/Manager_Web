@@ -36,7 +36,7 @@ export default function AdminHeader() {
           <div className="flex items-center gap-4">
             <div className="cursor-pointer" onClick={() => router.push('/admin')}>
               <Image
-                src="/images/logo_small.png"
+                src="/images/logo_main.png"
                 alt="TPT Logo"
                 width={40}
                 height={40}
@@ -47,14 +47,13 @@ export default function AdminHeader() {
             {/* Mock 데이터 토글 버튼 */}
             <button
               onClick={toggleMockMode}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                isMockMode
-                  ? 'bg-orange-500 text-white hover:bg-orange-600'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${isMockMode
+                ? 'bg-orange-500 text-white hover:bg-orange-600'
+                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                }`}
               title={isMockMode ? 'Mock 데이터 사용 중' : '실제 데이터 사용 중'}
             >
-              {isMockMode ? '🔧 Mock' : '📡 Real'}
+              {isMockMode ? '임시 데이터' : '실제 데이터'}
             </button>
           </div>
 
@@ -64,11 +63,11 @@ export default function AdminHeader() {
               <button
                 key={item.path}
                 onClick={() => router.push(item.path)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  isActive(item.path)
-                    ? 'border-2 border-red-500 text-red-600 font-bold'
-                    : 'border-2 border-transparent text-gray-700 hover:bg-gray-100'
-                }`}
+                className={`relative px-4 py-2 font-medium transition-all cursor-pointer
+  ${isActive(item.path)
+                    ? 'border-b-2 border-black text-black'
+                    : 'text-gray-700 hover:text-black hover:bg-gray-100'
+                  }`}
               >
                 {item.name}
               </button>
@@ -78,7 +77,7 @@ export default function AdminHeader() {
           {/* 우측 마이페이지 버튼 */}
           <button
             onClick={() => router.push('/admin/mypage')}
-            className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            className="px-5 py-2 bg-blue-400 text-white rounded-lg font-md cursor-pointer"
           >
             마이페이지
           </button>

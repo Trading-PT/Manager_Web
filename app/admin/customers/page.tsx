@@ -88,7 +88,7 @@ export default function CustomersPage() {
         phone: user.phone || user.phoneNumber,
         registeredAt: user.createdAt || user.registeredAt,
         approvalStatus: user.status === 'PENDING' ? '승인 대기 중' :
-                       user.status === 'APPROVED' ? '승인' : '승인 불가',
+          user.status === 'APPROVED' ? '승인' : '승인 불가',
         uid: user.uid || user.userId || user.id?.toString() || '-',
       }));
       setNewUsers(users);
@@ -100,7 +100,7 @@ export default function CustomersPage() {
   const loadConsultations = async () => {
     const response = await api.getAdminConsultations();
     if (response.success && response.data) {
-      const consultationList = response.data.map((consultation: any) => ({
+      const consultationList = response.data?.map((consultation: any) => ({
         id: consultation.consultationId || consultation.id,
         name: consultation.customerName || consultation.name,
         phone: consultation.phone || consultation.phoneNumber,
@@ -138,7 +138,7 @@ export default function CustomersPage() {
 
   const handleApprovalChange = async (id: number, newStatus: NewUser['approvalStatus']) => {
     const apiStatus = newStatus === '승인' ? 'APPROVED' :
-                     newStatus === '승인 불가' ? 'REJECTED' : 'PENDING';
+      newStatus === '승인 불가' ? 'REJECTED' : 'PENDING';
 
     const response = await api.updateUserStatus(id, apiStatus as 'APPROVED' | 'REJECTED');
 
@@ -262,10 +262,9 @@ export default function CustomersPage() {
                         <select
                           value={user.approvalStatus}
                           onChange={(e) => handleApprovalChange(user.id, e.target.value as NewUser['approvalStatus'])}
-                          className={`text-sm font-medium border-none outline-none cursor-pointer ${
-                            user.approvalStatus === '승인 대기 중' ? 'text-gray-500' :
-                            user.approvalStatus === '승인' ? 'text-blue-600' : 'text-red-600'
-                          }`}
+                          className={`text-sm font-medium border-none outline-none cursor-pointer ${user.approvalStatus === '승인 대기 중' ? 'text-gray-500' :
+                              user.approvalStatus === '승인' ? 'text-blue-600' : 'text-red-600'
+                            }`}
                         >
                           <option value="승인 대기 중">승인 대기 중</option>
                           <option value="승인">승인</option>
@@ -427,11 +426,10 @@ export default function CustomersPage() {
             <h2 className="text-2xl font-bold text-gray-900">모든 구독 고객 목록</h2>
             <button
               onClick={() => setShowMyCustomersOnly(!showMyCustomersOnly)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                showMyCustomersOnly
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${showMyCustomersOnly
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+                }`}
             >
               내 담당 고객만
             </button>

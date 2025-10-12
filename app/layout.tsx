@@ -22,6 +22,7 @@ export default function RootLayout({
         <MockDataProvider>
           {children}
         </MockDataProvider>
+        <div id="portal-root" />
       </body>
     </html>
   );
