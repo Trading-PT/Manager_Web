@@ -159,11 +159,11 @@ export default function ComplaintsPage() {
 
       <main className="max-w-[1920px] mx-auto px-6 py-8">
         {loading && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          // <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6">
               <p className="text-lg font-medium">로딩 중...</p>
             </div>
-          </div>
+          // </div>
         )}
 
         <div className="mb-8">

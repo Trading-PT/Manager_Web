@@ -1,9 +1,8 @@
-// API 호출 공통 규격 정의하여 재활용
 import { getXsrfToken, updateXsrfTokenFromResponse } from '../utils/xsrfToken';
 import { getIsMockMode } from '../contexts/MockDataContext';
 import * as mockData from './mockData';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URI || 'https://dev.tradingpt.shop';
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URI;
 
 interface LoginRequest {
   username: string;
@@ -46,11 +45,16 @@ async function apiCall<T>(
     updateXsrfTokenFromResponse(response);
 
     if (!response.ok) {
+      console.log("오류! response는:", response);
       const errorData = await response.json().catch(() => ({}));
       return {
         success: false,
         error: errorData.message || `HTTP Error: ${response.status}`,
       };
+    }
+
+    if (response.ok){
+     console.log("성공! reeponse는:", response);
     }
 
     const data = await response.json();
@@ -59,6 +63,8 @@ async function apiCall<T>(
       data: data.data || data,
     };
   } catch (error) {
+    console.log("에러:", error);
+    
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -122,7 +128,7 @@ export async function getPendingUsers(): Promise<ApiResponse<any>> {
     });
   }
 
-  return apiCall('/admin/api/v1/users/pending', {
+  return apiCall('/api/v1/admin/users/pending', {
     method: 'GET',
   });
 }
@@ -132,7 +138,7 @@ export async function updateUserStatus(
   userId: number,
   status: 'APPROVED' | 'REJECTED'
 ): Promise<ApiResponse<any>> {
-  return apiCall(`/admin/api/v1/users/${userId}/status`, {
+  return apiCall(`/api/v1/admin/users/${userId}/status`, {
     method: 'PATCH',
     body: JSON.stringify({ status }),
   });
@@ -205,22 +211,22 @@ export async function deleteConsultationBlock(blockId: number): Promise<ApiRespo
 // ===== 트레이너 관리 API =====
 
 // 트레이너가 담당하는 고객 조회
-export async function getManagedCustomers(): Promise<ApiResponse<any>> {
-  if (getIsMockMode()) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          data: mockData.mockManagedCustomers,
-        });
-      }, 300);
-    });
-  }
+// export async function getManagedCustomers(): Promise<ApiResponse<any>> {
+//   if (getIsMockMode()) {
+//     return new Promise((resolve) => {
+//       setTimeout(() => {
+//         resolve({
+//           success: true,
+//           data: mockData.mockManagedCustomers,
+//         });
+//       }, 300);
+//     });
+//   }
 
-  return apiCall('/api/v1/trainers/me/managed_customers/evaluations', {
-    method: 'GET',
-  });
-}
+//   return apiCall('/api/v1/trainers/me/managed_customers/evaluations', {
+//     method: 'GET',
+//   });
+// }
 
 // ===== 피드백 요청 API (어드민) =====
 
@@ -357,7 +363,7 @@ export default {
   updateConsultationMemo,
   createConsultationBlock,
   deleteConsultationBlock,
-  getManagedCustomers,
+  // getManagedCustomers,
   getAdminFeedbackRequests,
   updateBestFeedbacks,
   getAdminComplaints,

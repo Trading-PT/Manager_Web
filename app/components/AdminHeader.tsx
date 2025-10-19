@@ -3,6 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useMockData } from '../contexts/MockDataContext';
+import CustomButton from './CustomButton';
 
 interface MenuItem {
   name: string;
@@ -36,7 +37,7 @@ export default function AdminHeader() {
           <div className="flex items-center gap-4">
             <div className="cursor-pointer" onClick={() => router.push('/admin')}>
               <Image
-                src="/images/logo_small.png"
+                src="/favicon.png"
                 alt="TPT Logo"
                 width={40}
                 height={40}
@@ -45,7 +46,7 @@ export default function AdminHeader() {
             </div>
 
             {/* Mock 데이터 토글 버튼 */}
-            <button
+            {/* <button
               onClick={toggleMockMode}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 isMockMode
@@ -55,7 +56,7 @@ export default function AdminHeader() {
               title={isMockMode ? 'Mock 데이터 사용 중' : '실제 데이터 사용 중'}
             >
               {isMockMode ? '🔧 Mock' : '📡 Real'}
-            </button>
+            </button> */}
           </div>
 
           {/* 중앙 메뉴 */}
@@ -64,7 +65,7 @@ export default function AdminHeader() {
               <button
                 key={item.path}
                 onClick={() => router.push(item.path)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`px-4 py-2 rounded-lg font-medium transition-all cursor-pointer ${
                   isActive(item.path)
                     ? 'border-2 border-red-500 text-red-600 font-bold'
                     : 'border-2 border-transparent text-gray-700 hover:bg-gray-100'
@@ -76,12 +77,12 @@ export default function AdminHeader() {
           </nav>
 
           {/* 우측 마이페이지 버튼 */}
-          <button
+          <CustomButton
             onClick={() => router.push('/admin/mypage')}
-            className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            variant='primary'
           >
             마이페이지
-          </button>
+          </CustomButton>
         </div>
       </div>
     </header>
