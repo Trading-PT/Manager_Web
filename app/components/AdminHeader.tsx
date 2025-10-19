@@ -48,11 +48,10 @@ export default function AdminHeader() {
             {/* Mock 데이터 토글 버튼 */}
             {/* <button
               onClick={toggleMockMode}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                isMockMode
-                  ? 'bg-orange-500 text-white hover:bg-orange-600'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-              }`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${isMockMode
+                ? 'bg-orange-500 text-white hover:bg-orange-600'
+                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                }`}
               title={isMockMode ? 'Mock 데이터 사용 중' : '실제 데이터 사용 중'}
             >
               {isMockMode ? '🔧 Mock' : '📡 Real'}

@@ -47,3 +47,8 @@ claude-docs
 next-env.d.ts
 
 .env
+.claude
+.gitignore
+
+localhost.pem
+localhost-key.pem
