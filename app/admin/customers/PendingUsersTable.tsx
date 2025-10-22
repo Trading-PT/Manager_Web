@@ -1,4 +1,5 @@
 'use client';
+
 interface Props {
   newUsers: any[];
   onStatusChange: (id: number, newStatus: string) => void;
@@ -14,32 +15,53 @@ export default function PendingUsersTable({ newUsers, onStatusChange }: Props) {
             <thead className="bg-gray-50">
               <tr>
                 {['성함', '전화번호', '승인 신청 일시', 'UID', '승인 여부'].map((h) => (
-                  <th key={h} className="px-6 py-3 text-left text-xs font-medium text-gray-500">{h}</th>
+                  <th
+                    key={h}
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500"
+                  >
+                    {h}
+                  </th>
                 ))}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {newUsers.length === 0 ? (
-                <tr><td colSpan={5} className="text-center py-6 text-gray-500">신규 가입자가 없습니다.</td></tr>
-              ) : newUsers.map((u) => (
-                <tr key={u.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm">{u.name}</td>
-                  <td className="px-6 py-4 text-sm">{u.phone}</td>
-                  <td className="px-6 py-4 text-sm">{u.registeredAt}</td>
-                  <td className="px-6 py-4 text-sm font-mono">{u.uid}</td>
-                  <td className="px-6 py-4">
-                    <select
-                      value={u.approvalStatus}
-                      onChange={(e) => onStatusChange(u.id, e.target.value)}
-                      className="text-sm border-none outline-none"
-                    >
-                      <option value="승인 대기 중">승인 대기 중</option>
-                      <option value="승인">승인</option>
-                      <option value="승인 불가">승인 불가</option>
-                    </select>
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="text-center py-6 text-gray-500"
+                  >
+                    신규 가입자가 없습니다.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                newUsers.map((u) => (
+                  <tr key={u.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 text-sm">{u.name}</td>
+                    <td className="px-6 py-4 text-sm">{u.phone}</td>
+                    <td className="px-6 py-4 text-sm">{u.registeredAt}</td>
+
+                    {/* uid가 객체일 수도 있으므로 안전하게 처리 */}
+                    <td className="px-6 py-4 text-sm font-mono">
+                      {typeof u.uid === 'object'
+                        ? u.uid?.uid || '-'
+                        : u.uid || '-'}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <select
+                        value={u.approvalStatus}
+                        onChange={(e) => onStatusChange(u.id, e.target.value)}
+                        className="text-sm border-none outline-none bg-transparent cursor-pointer"
+                      >
+                        <option value="승인 대기 중">승인 대기 중</option>
+                        <option value="승인">승인</option>
+                        <option value="승인 불가">승인 불가</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

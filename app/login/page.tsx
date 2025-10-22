@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
-import { adminLogin } from '../api/serverCall';
-import { getXsrfTokenFromCookie, setXsrfToken } from '../utils/xsrfToken';
+import { adminLogin } from '../api/auth';
+import { getXsrfToken, setXsrfToken } from '../utils/xsrfToken';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,7 +34,7 @@ export default function LoginPage() {
         // 로그인 성공 후 약간의 지연을 두고 쿠키에서 XSRF-TOKEN 읽기
         // (브라우저가 set-cookie 헤더를 처리할 시간을 줌)
         setTimeout(() => {
-          const xsrfToken = getXsrfTokenFromCookie();
+          const xsrfToken = getXsrfToken();
           if (xsrfToken) {
             setXsrfToken(xsrfToken);
             console.log('XSRF-TOKEN saved from cookie:', xsrfToken);

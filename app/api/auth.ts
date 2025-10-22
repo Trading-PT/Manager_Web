@@ -13,6 +13,8 @@ interface LoginResponse {
   user?: any;
 }
 
+// 관리자 로그인 
+
 export async function adminLogin(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
   try {
     const response = await fetch(`${BASE_URL}/api/v1/admin/login`, {
