@@ -7,6 +7,7 @@ import { useCustomersData } from './hooks/useCustomersData';
 import PendingUsersTable from './PendingUsersTable';
 import ConsultationsTable from './ConsultationsTable';
 import InvestmentTypeChangeTable from './InvestmentTypeChangeTable';
+import TokenUsedFeedbackModal from './TokenUsedFeedbackModal';
 // import CustomerStats from './CustomerStats';
 import ConsultationMemoModal from './ConsultationMemoModal';
 import {
@@ -26,6 +27,9 @@ export default function CustomersPage() {
   // 투자 유형 변경 신청
   const [changeRequests, setChangeRequests] = useState<ChangeRequest[]>([]);
   const [loadingChangeRequests, setLoadingChangeRequests] = useState(false);
+
+  // 토큰 사용 피드백 모달
+  const [showTokenFeedbackModal, setShowTokenFeedbackModal] = useState(false);
 
   const handleConsultationToggle = async (id: number) => {
     // const res = await api.acceptConsultation(id);
@@ -94,6 +98,17 @@ export default function CustomersPage() {
       <AdminHeader />
       <main className="max-w-[1920px] mx-auto px-6 py-8">
         {/* {loading && <p>로딩 중...</p>} */}
+
+        {/* 토큰 차감형 피드백 요청 조회 버튼 */}
+        <div className="mb-6 flex justify-end">
+          <CustomButton
+            variant="primary"
+            onClick={() => setShowTokenFeedbackModal(true)}
+          >
+            토큰 차감형 피드백 요청 조회
+          </CustomButton>
+        </div>
+
         <PendingUsersTable newUsers={newUsers} onStatusChange={updateUserApprovalStatus} />
         <InvestmentTypeChangeTable
           changeRequests={changeRequests}
@@ -114,6 +129,10 @@ export default function CustomersPage() {
           onClose={() => setShowModal(false)}
           onSave={handleSaveMemo}
         />
+      )}
+
+      {showTokenFeedbackModal && (
+        <TokenUsedFeedbackModal onClose={() => setShowTokenFeedbackModal(false)} />
       )}
     </div>
   );

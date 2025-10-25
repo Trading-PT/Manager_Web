@@ -22,7 +22,7 @@ export default function AdminHeader() {
     { name: '후기관리', path: '/admin/reviews' },
     { name: '민원관리', path: '/admin/complaints' },
     { name: '강의관리', path: '/admin/lectures' },
-    { name: '알림관리', path: '/admin/notifications' },
+    { name: 'BP관리', path: '/admin/best-feedback' },
     { name: 'LT관리', path: '/admin/lt' },
     { name: '상담일시관리', path: '/admin/consultations' },
   ];
