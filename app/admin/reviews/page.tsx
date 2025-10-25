@@ -10,6 +10,7 @@ import {
   updateReviewVisibility,
   type Review,
 } from '../../api/reviews';
+import ReviewCreateModal from './ReviewCreateModal';
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -20,6 +21,7 @@ export default function ReviewsPage() {
   // 모달 상태
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   // 답변 관련
   const [replyText, setReplyText] = useState('');
@@ -109,6 +111,13 @@ export default function ReviewsPage() {
     setIsEditingReply(false);
   };
 
+  const handleCreateModalClose = (reload?: boolean) => {
+    setShowCreateModal(false);
+    if (reload) {
+      loadReviews(0);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     if (!dateString) return '-';
     try {
@@ -142,8 +151,15 @@ export default function ReviewsPage() {
         )}
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">후기 관리</h1>
-          <p className="text-gray-600 mt-2">고객 리뷰를 확인하고 답변을 작성할 수 있습니다.</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">후기 관리</h1>
+              <p className="text-gray-600 mt-2">고객 리뷰를 확인하고 답변을 작성할 수 있습니다.</p>
+            </div>
+            <CustomButton variant="primary" onClick={() => setShowCreateModal(true)}>
+              리뷰 데이터 생성
+            </CustomButton>
+          </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -238,6 +254,9 @@ export default function ReviewsPage() {
           )}
         </div>
       </main>
+
+      {/* 리뷰 생성 모달 */}
+      {showCreateModal && <ReviewCreateModal onClose={handleCreateModalClose} />}
 
       {/* 리뷰 상세 모달 */}
       {showDetailModal && selectedReview && (

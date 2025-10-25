@@ -89,3 +89,11 @@ export async function updateReviewVisibility(
     body: JSON.stringify({ isPublic }),
   });
 }
+
+// 리뷰 작성
+export async function createReview(content: string): Promise<ApiResponse<void>> {
+  return apiCall<void>('/api/v1/reviews', {
+    method: 'POST',
+    body: JSON.stringify({ content }),
+  });
+}
