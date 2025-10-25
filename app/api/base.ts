@@ -15,10 +15,11 @@ export interface ApiResponse<T> {
 
 export async function apiCall<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit & { isMultipart?: boolean } = {}
 ): Promise<ApiResponse<T>> {
   try {
     const xsrfToken = getXsrfToken();
+    const { isMultipart, ...fetchOptions } = options;
 
     // 요청 시작 시점 로그
     console.groupCollapsed(`[API CALL] ${endpoint}`);
@@ -26,17 +27,24 @@ export async function apiCall<T>(
     console.log('➡️ Request Method:', options.method || 'GET');
     console.log('➡️ XSRF Token (before request):', xsrfToken || '(none)');
     console.log('➡️ Request Headers (before merge):', options.headers);
-    console.log('➡️ Request Body:', options.body);
+    console.log('➡️ Is Multipart:', isMultipart);
     console.groupEnd();
 
+    // multipart인 경우 Content-Type 헤더를 자동으로 설정하지 않음 (FormData가 자동 설정)
+    const headers: Record<string, string> = {
+      ...(xsrfToken ? { 'X-XSRF-TOKEN': xsrfToken } : {}),
+      ...(options.headers as Record<string, string>),
+    };
+
+    // multipart가 아닐 때만 Content-Type 설정
+    if (!isMultipart) {
+      headers['Content-Type'] = 'application/json';
+    }
+
     const response = await fetch(`${BASE_URL}${endpoint}`, {
-      ...options,
+      ...fetchOptions,
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(xsrfToken ? { 'X-XSRF-TOKEN': xsrfToken } : {}),
-        ...options.headers,
-      },
+      headers,
     });
 
     // 응답 직후 토큰 갱신 확인

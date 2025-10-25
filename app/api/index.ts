@@ -10,3 +10,4 @@ export * from './statistics';
 export * from './trainers';
 export * from './reviews';
 export * from './investmentTypeChange';
+export * from './leveltest';
