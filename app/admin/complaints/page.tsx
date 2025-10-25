@@ -4,7 +4,13 @@ import { useState, useEffect } from 'react';
 import AdminHeader from '../../components/AdminHeader';
 import CustomModal from '../../components/CustomModal';
 import CustomButton from '../../components/CustomButton';
-import * as api from '../../api/serverCall';
+import {
+  getAdminComplaints,
+  getAdminComplaint,
+  createComplaintReply,
+  updateComplaintReply,
+  deleteComplaintReply,
+} from '../../api/complaints';
 
 interface Complaint {
   id: number;
@@ -34,7 +40,7 @@ export default function ComplaintsPage() {
 
   const loadComplaints = async () => {
     setLoading(true);
-    const response = await api.getAdminComplaints();
+    const response = await getAdminComplaints();
     if (response.success && response.data) {
       const complaintList = Array.isArray(response.data) ? response.data : response.data.content || [];
       const formattedComplaints = complaintList.map((complaint: any) => ({
@@ -57,7 +63,7 @@ export default function ComplaintsPage() {
 
   const handleShowDetail = async (complaintId: number) => {
     setLoading(true);
-    const response = await api.getAdminComplaint(complaintId);
+    const response = await getAdminComplaint(complaintId);
     if (response.success && response.data) {
       const complaint = response.data;
       const formattedComplaint: Complaint = {
@@ -91,10 +97,10 @@ export default function ComplaintsPage() {
 
     if (selectedComplaint.reply && !isEditingReply) {
       // 이미 답변이 있는 경우 수정
-      response = await api.updateComplaintReply(selectedComplaint.id, replyText);
+      response = await updateComplaintReply(selectedComplaint.id, replyText);
     } else {
       // 새로운 답변 작성
-      response = await api.createComplaintReply(selectedComplaint.id, replyText);
+      response = await createComplaintReply(selectedComplaint.id, replyText);
     }
 
     if (response.success) {
@@ -116,7 +122,7 @@ export default function ComplaintsPage() {
     if (!confirm('답변을 삭제하시겠습니까?')) return;
 
     setLoading(true);
-    const response = await api.deleteComplaintReply(selectedComplaint.id);
+    const response = await deleteComplaintReply(selectedComplaint.id);
 
     if (response.success) {
       alert('답변이 삭제되었습니다.');

@@ -198,3 +198,48 @@ export const mockMonthlyTradingSummary = {
     profitRate: 75.0,
   },
 };
+
+export const mockTrainers = [
+  {
+    trainerId: 1,
+    profileImageUrl: '',
+    name: '이코치',
+    phone: '01012345678',
+    onelineIntroduction: '스윙 트레이딩 전문 트레이너',
+    username: 'trainer_lee',
+    role: 'ROLE_TRAINER',
+  },
+  {
+    trainerId: 2,
+    profileImageUrl: '',
+    name: '박코치',
+    phone: '01023456789',
+    onelineIntroduction: '데이 트레이딩 전문가',
+    username: 'trainer_park',
+    role: 'ROLE_TRAINER',
+  },
+  {
+    trainerId: 3,
+    profileImageUrl: '',
+    name: '김관리자',
+    phone: '01034567890',
+    onelineIntroduction: '시스템 관리자',
+    username: 'admin_kim',
+    role: 'ROLE_ADMIN',
+  },
+];
+
+export const mockAssignedCustomers = [
+  {
+    customerId: 1,
+    name: '정수민',
+  },
+  {
+    customerId: 2,
+    name: '임하늘',
+  },
+  {
+    customerId: 3,
+    name: '송지우',
+  },
+];

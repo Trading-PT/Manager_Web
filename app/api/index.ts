@@ -7,3 +7,4 @@ export * from './consultation';
 export * from './feedback';
 export * from './complaints';
 export * from './statistics';
+export * from './trainers';
