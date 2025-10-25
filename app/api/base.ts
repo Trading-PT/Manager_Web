@@ -2,8 +2,6 @@ import { getXsrfToken, updateXsrfTokenFromResponse } from '../utils/xsrfToken';
 import { getIsMockMode } from '../contexts/MockDataContext';
 import * as mockData from './mockData';
 
-// 공통 API 호출 함수 
-
 export const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URI;
 
 export interface ApiResponse<T> {
@@ -18,58 +16,59 @@ export async function apiCall<T>(
   options: RequestInit & { isMultipart?: boolean } = {}
 ): Promise<ApiResponse<T>> {
   try {
-    const xsrfToken = getXsrfToken();
     const { isMultipart, ...fetchOptions } = options;
 
-    // 요청 시작 시점 로그
-    console.groupCollapsed(`[API CALL] ${endpoint}`);
-    console.log('➡️ Request URL:', `${BASE_URL}${endpoint}`);
-    console.log('➡️ Request Method:', options.method || 'GET');
-    console.log('➡️ XSRF Token (before request):', xsrfToken || '(none)');
-    console.log('➡️ Request Headers (before merge):', options.headers);
-    console.log('➡️ Is Multipart:', isMultipart);
-    console.groupEnd();
+    // ✅ fetch 직전 최신 토큰 읽기 (localStorage 최신 상태 반영)
+    const currentToken = getXsrfToken();
 
-    // multipart인 경우 Content-Type 헤더를 자동으로 설정하지 않음 (FormData가 자동 설정)
     const headers: Record<string, string> = {
-      ...(xsrfToken ? { 'X-XSRF-TOKEN': xsrfToken } : {}),
+      ...(currentToken ? { 'X-XSRF-TOKEN': currentToken } : {}),
       ...(options.headers as Record<string, string>),
     };
 
-    // multipart가 아닐 때만 Content-Type 설정
-    if (!isMultipart) {
+    // ✅ body가 JSON일 때만 Content-Type 지정
+    if (!isMultipart && !(options.body instanceof FormData)) {
       headers['Content-Type'] = 'application/json';
     }
 
+    console.groupCollapsed(`[API CALL] ${endpoint}`);
+    console.log('➡️ Request URL:', `${BASE_URL}${endpoint}`);
+    console.log('➡️ Method:', options.method || 'GET');
+    console.log('➡️ Using XSRF Token:', currentToken || '(none)');
+    console.groupEnd();
+
+    // ✅ 실제 요청
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       ...fetchOptions,
       credentials: 'include',
       headers,
     });
 
-    // 응답 직후 토큰 갱신 확인
-    updateXsrfTokenFromResponse(response);
+    // ✅ 응답에서 새로운 XSRF 토큰 갱신
+    await updateXsrfTokenFromResponse(response);
 
-    // 응답 상태 코드 및 헤더 확인
     console.groupCollapsed(`[API RESPONSE] ${endpoint}`);
-    console.log('⬅️ Response Status:', response.status);
-    console.log('⬅️ Response Headers:', Object.fromEntries(response.headers.entries()));
-    console.log('⬅️ XSRF Token (after response):', getXsrfToken());
+    console.log('⬅️ Status:', response.status);
+    console.log('⬅️ Updated XSRF Token:', getXsrfToken());
     console.groupEnd();
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error('❌ API Error:', errorData);
-      return { success: false, error: errorData.message || `HTTP ${response.status}` };
-    }
+    // ✅ 응답 파싱
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : null;
 
-    const data = await response.json();
+    if (!response.ok) {
+      console.error('❌ API Error:', data);
+      return {
+        success: false,
+        error: data?.message || `HTTP ${response.status}`,
+      };
+    }
 
     console.log('✅ API Success Data:', data);
 
     return {
       success: true,
-      data: data.result || data.data || data,
+      data: data?.result || data?.data || data,
     };
   } catch (error) {
     console.error('🚨 API Exception:', error);

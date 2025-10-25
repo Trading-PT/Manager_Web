@@ -23,17 +23,18 @@ export function setXsrfToken(token: string): void {
  * 서버가 쿠키가 아닌 헤더로 토큰을 전달할 때 사용하는 방식입니다.
  */
 export function updateXsrfTokenFromResponse(response: Response): boolean {
-  // ✅ 서버에서 내려주는 헤더 이름 확인 (Spring: X-XSRF-TOKEN 또는 X-CSRF-TOKEN 등)
   const newToken =
     response.headers.get('X-XSRF-TOKEN') ||
-    response.headers.get('X-CSRF-TOKEN');
+    response.headers.get('X-CSRF-TOKEN') ||
+    response.headers.get('x-xsrf-token') ||
+    response.headers.get('x-csrf-token');
 
   const currentToken = getXsrfToken();
 
   if (newToken) {
     if (newToken !== currentToken) {
       setXsrfToken(newToken);
-      console.log('🔄 XSRF Token updated from response header:', newToken);
+      console.log('🆕 XSRF Token updated from response header:', newToken);
       return true;
     } else {
       console.log('✅ XSRF Token already up-to-date:', currentToken);
@@ -44,3 +45,4 @@ export function updateXsrfTokenFromResponse(response: Response): boolean {
   console.warn('⚠️ No XSRF token found in response headers');
   return false;
 }
+
