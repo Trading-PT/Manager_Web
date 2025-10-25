@@ -2,12 +2,18 @@
 import AdminHeader from '../../components/AdminHeader';
 import CustomModal from '../../components/CustomModal';
 import CustomButton from '../../components/CustomButton';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCustomersData } from './hooks/useCustomersData';
 import PendingUsersTable from './PendingUsersTable';
 import ConsultationsTable from './ConsultationsTable';
+import InvestmentTypeChangeTable from './InvestmentTypeChangeTable';
 // import CustomerStats from './CustomerStats';
 import ConsultationMemoModal from './ConsultationMemoModal';
+import {
+  getPendingChangeRequests,
+  processChangeRequest,
+  type ChangeRequest,
+} from '../../api/investmentTypeChange';
 // import * as api from '../../api/serverCall';
 
 
@@ -16,6 +22,10 @@ export default function CustomersPage() {
   const [showModal, setShowModal] = useState(false);
   const [memoText, setMemoText] = useState('');
   const [currentId, setCurrentId] = useState<number | null>(null);
+
+  // 투자 유형 변경 신청
+  const [changeRequests, setChangeRequests] = useState<ChangeRequest[]>([]);
+  const [loadingChangeRequests, setLoadingChangeRequests] = useState(false);
 
   const handleConsultationToggle = async (id: number) => {
     // const res = await api.acceptConsultation(id);
@@ -40,12 +50,55 @@ export default function CustomersPage() {
     // }
   };
 
+  // 투자 유형 변경 신청 로드
+  useEffect(() => {
+    loadChangeRequests();
+  }, []);
+
+  const loadChangeRequests = async () => {
+    setLoadingChangeRequests(true);
+    const response = await getPendingChangeRequests();
+    console.log('[InvestmentTypeChange] API Response:', response);
+    if (response.success && response.data) {
+      console.log('[InvestmentTypeChange] Loaded requests:', response.data);
+      setChangeRequests(response.data);
+    } else {
+      console.error('[InvestmentTypeChange] Failed to load:', response.error);
+    }
+    setLoadingChangeRequests(false);
+  };
+
+  // 투자 유형 변경 신청 처리
+  const handleProcessChangeRequest = async (
+    requestId: number,
+    approved: boolean,
+    rejectionReason?: string
+  ) => {
+    setLoadingChangeRequests(true);
+    const response = await processChangeRequest(requestId, {
+      approved,
+      rejectionReason,
+    });
+
+    if (response.success) {
+      alert(approved ? '신청이 승인되었습니다.' : '신청이 거부되었습니다.');
+      loadChangeRequests(); // 목록 새로고침
+    } else {
+      alert(`오류: ${response.error}`);
+    }
+    setLoadingChangeRequests(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminHeader />
       <main className="max-w-[1920px] mx-auto px-6 py-8">
         {/* {loading && <p>로딩 중...</p>} */}
         <PendingUsersTable newUsers={newUsers} onStatusChange={updateUserApprovalStatus} />
+        <InvestmentTypeChangeTable
+          changeRequests={changeRequests}
+          onProcess={handleProcessChangeRequest}
+        />
         <ConsultationsTable
           consultations={consultations}
           onToggle={handleConsultationToggle}
