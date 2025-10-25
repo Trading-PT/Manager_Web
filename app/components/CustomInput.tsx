@@ -8,6 +8,7 @@ interface CustomInputProps {
   label?: string;
   required?: boolean;
   className?: string;
+  autoComplete?: string;
 }
 
 export default function CustomInput({
@@ -18,6 +19,7 @@ export default function CustomInput({
   label,
   required = false,
   className = '',
+  autoComplete,
 }: CustomInputProps) {
   return (
     <div className="w-full">
@@ -33,6 +35,7 @@ export default function CustomInput({
         value={value}
         onChange={onChange}
         required={required}
+        autoComplete={autoComplete}
         className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
       />
     </div>
