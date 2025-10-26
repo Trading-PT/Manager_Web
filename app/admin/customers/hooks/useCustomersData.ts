@@ -57,11 +57,11 @@ const loadPendingUsers = async () => {
     try {
       // 한글 상태를 서버 enum 값으로 변환
       const apiStatus =
-        newStatus === '승인' ? 'APPROVED' :
-        newStatus === '승인 불가' ? 'REJECTED' :
-        'PENDING';
+        newStatus === '승인' ? 'UID_APPROVED' :
+        newStatus === '승인 불가' ? 'UID_REJECTED' :
+        'UID_REVIEW_PENDING';
 
-      const res = await api.updateUserStatus(userId, apiStatus as 'APPROVED' | 'REJECTED');
+      const res = await api.updateUserStatus(userId, apiStatus as 'UID_APPROVED' | 'UID_REJECTED');
       if (res.success) {
         setNewUsers((prev) =>
           prev.map((user) =>

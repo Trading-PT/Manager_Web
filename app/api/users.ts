@@ -33,11 +33,10 @@ export async function getPendingUsers(): Promise<ApiResponse<PendingUser[]>> {
 // UID 승인/거절 처리
 export async function updateUserStatus(
   userId: number,
-  status: 'APPROVED' | 'REJECTED'
+  status: 'UID_APPROVED' | 'UID_REJECTED'
 ): Promise<ApiResponse<UserStatusResponse>> {
-  return apiCall(`/api/v1/admin/users/${userId}/status`, {
+  return apiCall(`/api/v1/admin/users/${userId}/status?status=${status}`, {
     method: 'PATCH',
-    body: JSON.stringify({ status }),
   });
 }
 
