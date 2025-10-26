@@ -100,12 +100,12 @@ export default function EventsPage() {
           </div>
 
           <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h2 className="text-sm font-semibold text-blue-800 mb-2">사용 안내</h2>
-            <ul className="text-xs text-blue-700 space-y-1">
+            <h2 className="text-sm font-semibold text-blue-800 mb-2">나중에 고객관리: 고객목록에서 부여하는 걸로 수정 예정</h2>
+            {/* <ul className="text-xs text-blue-700 space-y-1">
               <li>• 고객 ID는 양수로 입력해주세요.</li>
               <li>• 토큰 개수는 1개 이상으로 입력해주세요.</li>
               <li>• 토큰 부여는 즉시 반영되며, 취소할 수 없습니다.</li>
-            </ul>
+            </ul> */}
           </div>
         </div>
       </main>
