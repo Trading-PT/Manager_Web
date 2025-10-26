@@ -25,6 +25,7 @@ export default function AdminHeader() {
     { name: 'BP관리', path: '/admin/best-feedback' },
     { name: 'LT관리', path: '/admin/lt' },
     { name: '상담일시관리', path: '/admin/consultations' },
+    { name: '이벤트관리', path: '/admin/events' },
   ];
 
   const isActive = (path: string) => pathname === path;

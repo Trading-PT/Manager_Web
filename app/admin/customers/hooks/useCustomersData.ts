@@ -39,7 +39,9 @@ const loadPendingUsers = async () => {
           ? '승인 대기 중'
           : user.status === 'APPROVED'
           ? '승인'
-          : '승인 불가',
+          : user.status === 'REJECTED'
+          ? '승인 불가'
+          : '승인 대기 중',
       uid: user.uid || '-',
     }));
 
