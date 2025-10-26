@@ -68,6 +68,11 @@ export default function AssistantsPage() {
       return;
     }
 
+    if (!formData.passwordCheck) {
+      alert('비밀번호 확인을 입력해주세요.');
+      return;
+    }
+
     if (formData.password !== formData.passwordCheck) {
       alert('비밀번호가 일치하지 않습니다.');
       return;
@@ -75,6 +80,11 @@ export default function AssistantsPage() {
 
     if (!/^[0-9]{10,11}$/.test(formData.phone)) {
       alert('전화번호는 10-11자리 숫자만 입력해주세요.');
+      return;
+    }
+
+    if (!formData.grantRole) {
+      alert('권한을 선택해주세요.');
       return;
     }
 

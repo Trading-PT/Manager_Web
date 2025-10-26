@@ -48,9 +48,22 @@ export async function createTrainer(
     const xsrfToken = getXsrfToken();
     const formData = new FormData();
 
-    // JSON 데이터를 Blob으로 변환하여 추가
-    const requestBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-    formData.append('request', requestBlob);
+    // 데이터 trim 처리
+    const trimmedData = {
+      ...data,
+      name: data.name.trim(),
+      phone: data.phone.trim(),
+      username: data.username.trim(),
+      password: data.password.trim(),
+      passwordCheck: data.passwordCheck.trim(),
+      onelineIntroduction: data.onelineIntroduction?.trim() || undefined,
+    };
+
+    // JSON 데이터를 File 객체로 변환하여 추가 (Content-Type을 명시적으로 설정)
+    const jsonFile = new File([JSON.stringify(trimmedData)], 'request.json', {
+      type: 'application/json',
+    });
+    formData.append('request', jsonFile);
 
     // 프로필 이미지 추가 (선택사항)
     if (profileImage) {
@@ -58,8 +71,19 @@ export async function createTrainer(
     }
 
     console.groupCollapsed('[API CALL] /api/v1/admin/trainers (POST)');
-    console.log('➡️ Request Data:', data);
+    console.log('➡️ Original Data:', data);
+    console.log('➡️ Trimmed Data:', trimmedData);
     console.log('➡️ Profile Image:', profileImage?.name || 'None');
+    console.log('➡️ FormData entries:');
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof Blob) {
+        console.log(`  ${key}:`, value.type, value.size, 'bytes');
+        // Blob 내용 확인
+        value.text().then(text => console.log(`  ${key} content:`, text));
+      } else {
+        console.log(`  ${key}:`, value);
+      }
+    }
     console.groupEnd();
 
     const response = await fetch(`${BASE_URL}/api/v1/admin/trainers`, {
@@ -106,9 +130,22 @@ export async function updateTrainer(
     const xsrfToken = getXsrfToken();
     const formData = new FormData();
 
-    // JSON 데이터를 Blob으로 변환하여 추가
-    const requestBlob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-    formData.append('request', requestBlob);
+    // 데이터 trim 처리
+    const trimmedData = {
+      ...data,
+      name: data.name.trim(),
+      phone: data.phone.trim(),
+      username: data.username.trim(),
+      password: data.password.trim(),
+      passwordCheck: data.passwordCheck.trim(),
+      onelineIntroduction: data.onelineIntroduction?.trim() || undefined,
+    };
+
+    // JSON 데이터를 File 객체로 변환하여 추가 (Content-Type을 명시적으로 설정)
+    const jsonFile = new File([JSON.stringify(trimmedData)], 'request.json', {
+      type: 'application/json',
+    });
+    formData.append('request', jsonFile);
 
     // 프로필 이미지 추가 (선택사항)
     if (profileImage) {
@@ -117,7 +154,8 @@ export async function updateTrainer(
 
     console.groupCollapsed(`[API CALL] /api/v1/admin/trainers/${trainerId} (PUT)`);
     console.log('➡️ Trainer ID:', trainerId);
-    console.log('➡️ Request Data:', data);
+    console.log('➡️ Original Data:', data);
+    console.log('➡️ Trimmed Data:', trimmedData);
     console.log('➡️ Profile Image:', profileImage?.name || 'None');
     console.groupEnd();
 
