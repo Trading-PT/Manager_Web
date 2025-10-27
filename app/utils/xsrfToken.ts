@@ -25,6 +25,7 @@ export function setXsrfToken(token: string): void {
 export function updateXsrfTokenFromResponse(response: Response): boolean {
   const newToken =
     response.headers.get('X-XSRF-TOKEN') ||
+    response.headers.get('XSRF-TOKEN') ||
     response.headers.get('X-Xsrf-Token') ||
     response.headers.get('X-CSRF-TOKEN') ||
     response.headers.get('x-xsrf-token') ||
