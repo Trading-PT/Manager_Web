@@ -78,11 +78,16 @@ const loadPendingUsers = async () => {
     }
   }; 
 
-  // 3. 신규 상담 신청 목록 조회 
+  // 3. 신규 상담 신청 목록 조회
   const loadConsultations = async () => {
   const res : any = await api2.getAdminConsultations();
+  console.log('📋 상담 API 응답:', res);
+  console.log('📋 res.data:', res.data);
+  console.log('📋 res.data.content:', res.data?.content);
+
   if (res.success && res.data) {
-    const consultations = res.data.result?.content || [];
+    const consultations = res.data.content || [];
+    console.log('✅ 최종 consultations 배열:', consultations);
 
     setConsultations(
       consultations.map((c: any) => ({
@@ -98,7 +103,8 @@ const loadPendingUsers = async () => {
           minute: '2-digit',
         }),
         // 상담 예정 일시 (date + time)
-        consultationDate: `${c.date} ${c.time}`,
+        // time이 문자열("10:00:00") 또는 LocalTime 객체일 수 있음
+        consultationDate: `${c.date} ${typeof c.time === 'string' ? c.time : `${String(c.time.hour).padStart(2, '0')}:${String(c.time.minute).padStart(2, '0')}`}`,
         isCompleted: c.isProcessed,
         memo: c.memo,
       }))

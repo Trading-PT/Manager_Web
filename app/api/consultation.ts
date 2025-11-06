@@ -14,7 +14,7 @@ export interface Consultation {
   customerName: string;
   customerPhoneNumber: string;
   date: string; // YYYY-MM-DD
-  time: LocalTime;
+  time: LocalTime | string; // 서버에서 문자열("HH:mm:ss") 또는 LocalTime 객체로 반환 가능
   createdAt: string;
   isProcessed: boolean;
   memo?: string;
