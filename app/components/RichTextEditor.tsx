@@ -7,7 +7,8 @@ import { Color } from '@tiptap/extension-color';
 import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import TextAlign from '@tiptap/extension-text-align';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { uploadImage } from '../api/s3';
 
 // 사용 가능한 폰트 목록
 export const AVAILABLE_FONTS = [
@@ -36,6 +37,9 @@ export default function RichTextEditor({
   onFontChange,
   readOnly = false,
 }: RichTextEditorProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -44,7 +48,10 @@ export default function RichTextEditor({
       Link.configure({
         openOnClick: false,
       }),
-      Image,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+      }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
@@ -63,6 +70,50 @@ export default function RichTextEditor({
       editor.commands.setContent(value);
     }
   }, [value, editor]);
+
+  // 이미지 업로드 핸들러
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editor) return;
+
+    // 이미지 파일 타입 검증
+    if (!file.type.startsWith('image/')) {
+      alert('이미지 파일만 업로드 가능합니다.');
+      return;
+    }
+
+    // 파일 크기 검증 (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('파일 크기는 5MB 이하여야 합니다.');
+      return;
+    }
+
+    setIsUploadingImage(true);
+    try {
+      // S3 업로드
+      const response = await uploadImage(file, 'columns/content');
+      if (response.success && response.data) {
+        // 에디터에 이미지 삽입
+        editor.chain().focus().setImage({ src: response.data.url }).run();
+      } else {
+        alert('이미지 업로드에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('이미지 업로드 오류:', error);
+      alert('이미지 업로드 중 오류가 발생했습니다.');
+    } finally {
+      setIsUploadingImage(false);
+      // 파일 입력 초기화
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  // 이미지 삽입 버튼 클릭
+  const handleImageButtonClick = () => {
+    fileInputRef.current?.click();
+  };
 
   // 폰트에 따른 스타일
   const getFontClassName = (font: string) => {
@@ -247,6 +298,25 @@ export default function RichTextEditor({
           >
             오른쪽
           </button>
+
+          <div className="w-px h-8 bg-gray-300"></div>
+
+          {/* 이미지 삽입 */}
+          <button
+            onClick={handleImageButtonClick}
+            disabled={isUploadingImage}
+            className="px-3 py-1.5 rounded border text-sm bg-white border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            type="button"
+          >
+            {isUploadingImage ? '업로드 중...' : '🖼️ 이미지'}
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
         </div>
       )}
 

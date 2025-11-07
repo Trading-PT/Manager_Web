@@ -67,6 +67,7 @@ export default function ColumnsManagementPage() {
     category: string;
     writerName: string;
     fontFamily: string;
+    thumbnailImage?: string;
   }) => {
     const response = await columnsApi.createColumn(data);
     if (response.success) {
@@ -86,6 +87,7 @@ export default function ColumnsManagementPage() {
     category: string;
     writerName: string;
     fontFamily: string;
+    thumbnailImage?: string;
   }) => {
     if (!selectedColumn) return;
 

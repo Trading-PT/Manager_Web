@@ -247,3 +247,119 @@ export function getFeedbackStatusColor(status: FeedbackStatus): string {
   };
   return colors[status] || 'bg-gray-100 text-gray-800';
 }
+
+// 내 담당 고객의 새로운 피드백 요청 리스트 조회
+export interface MyCustomerNewFeedbackListItem {
+  id: number;
+  customerId: number;
+  customerName: string;
+  title: string;
+  investmentType: InvestmentType;
+  courseStatus: CourseStatus;
+  status: FeedbackStatus;
+  createdAt: string;
+  feedbackYear: number;
+  feedbackMonth: number;
+  feedbackDay: number;
+  isTokenUsed: boolean;
+}
+
+export interface MyCustomerNewFeedbackListResponse {
+  feedbacks: MyCustomerNewFeedbackListItem[];
+  sliceInfo: SliceInfo;
+}
+
+export async function getMyCustomerNewFeedbackRequests(params?: {
+  page?: number;
+  size?: number;
+}): Promise<ApiResponse<MyCustomerNewFeedbackListResponse>> {
+  const queryParams = new URLSearchParams();
+  if (params?.page !== undefined) queryParams.append('page', String(params.page));
+  if (params?.size !== undefined) queryParams.append('size', String(params.size));
+
+  const query = queryParams.toString();
+  return apiCall<MyCustomerNewFeedbackListResponse>(
+    `/api/v1/admin/feedback-requests/my-customers/new${query ? `?${query}` : ''}`,
+    {
+      method: 'GET',
+    }
+  );
+}
+
+// 피드백 요청 상세 조회 (어드민)
+export interface FeedbackRequestDetail {
+  id: number;
+  investmentType: InvestmentType;
+  membershipLevel: 'BASIC' | 'PREMIUM';
+  status: FeedbackStatus;
+  dayDetail?: any;
+  scalpingDetail?: any;
+  swingDetail?: any;
+  feedbackResponse?: {
+    id: number;
+    title: string;
+    content: string;
+    submittedAt: string;
+    trainer: {
+      trainerId: number;
+      profileImageUrl: string;
+      trainerName: string;
+    };
+  };
+}
+
+export async function getAdminFeedbackRequestDetail(
+  feedbackRequestId: number
+): Promise<ApiResponse<FeedbackRequestDetail>> {
+  return apiCall<FeedbackRequestDetail>(
+    `/api/v1/admin/feedback-requests/${feedbackRequestId}`,
+    {
+      method: 'GET',
+    }
+  );
+}
+
+// 피드백 답변 생성
+export interface CreateFeedbackResponseRequest {
+  title: string;
+  content: string;
+}
+
+export interface FeedbackResponseResult {
+  id: number;
+  title: string;
+  content: string;
+  submittedAt: string;
+  trainer: {
+    trainerId: number;
+    profileImageUrl: string;
+    trainerName: string;
+  };
+}
+
+export async function createFeedbackResponse(
+  feedbackRequestId: number,
+  data: CreateFeedbackResponseRequest
+): Promise<ApiResponse<FeedbackResponseResult>> {
+  return apiCall<FeedbackResponseResult>(
+    `/api/v1/admin/feedback-responses/${feedbackRequestId}`,
+    {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }
+  );
+}
+
+// 피드백 답변 수정
+export async function updateFeedbackResponse(
+  feedbackRequestId: number,
+  data: CreateFeedbackResponseRequest
+): Promise<ApiResponse<FeedbackResponseResult>> {
+  return apiCall<FeedbackResponseResult>(
+    `/api/v1/admin/feedback-responses/${feedbackRequestId}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }
+  );
+}

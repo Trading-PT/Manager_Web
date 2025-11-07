@@ -63,7 +63,7 @@ export async function getPublicReviews(params?: {
   if (params?.size !== undefined) queryParams.append('size', String(params.size));
 
   const query = queryParams.toString();
-  return apiCall<ReviewListResponse>(`/api/v1/reviews${query ? `?${query}` : ''}`, {
+  return apiCall<ReviewListResponse>(`/api/v1/admin/reviews${query ? `?${query}` : ''}`, {
     method: 'GET',
   });
 }
@@ -90,9 +90,9 @@ export async function updateReviewVisibility(
   });
 }
 
-// 리뷰 작성
+// 리뷰 작성 (관리자용 - 임의 데이터 생성)
 export async function createReview(content: string): Promise<ApiResponse<void>> {
-  return apiCall<void>('/api/v1/reviews', {
+  return apiCall<void>('/api/v1/admin/reviews', {
     method: 'POST',
     body: JSON.stringify({ content }),
   });

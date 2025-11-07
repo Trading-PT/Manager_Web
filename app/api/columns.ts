@@ -67,6 +67,7 @@ export interface ColumnCreateRequest {
   category: string;
   writerName: string;
   fontFamily?: string;
+  thumbnailImage?: string;
 }
 
 export interface ColumnUpdateRequest {
@@ -76,6 +77,7 @@ export interface ColumnUpdateRequest {
   category: string;
   writerName: string;
   fontFamily?: string;
+  thumbnailImage?: string;
 }
 
 export interface CategoryCreateRequest {
