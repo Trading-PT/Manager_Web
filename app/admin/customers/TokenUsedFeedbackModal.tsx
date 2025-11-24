@@ -77,19 +77,10 @@ export default function TokenUsedFeedbackModal({ onClose }: TokenUsedFeedbackMod
   };
 
   return (
-    <CustomModal onClose={onClose}>
-      <div className="p-6 max-w-[1400px] w-full">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">토큰 차감형 피드백 요청 조회</h2>
-            <p className="text-sm text-gray-600 mt-1">
-              고객이 토큰을 사용하여 요청한 피드백 목록입니다.
-            </p>
-          </div>
-          <CustomButton variant="secondary" onClick={onClose}>
-            닫기
-          </CustomButton>
-        </div>
+    <CustomModal title="토큰 차감형 피드백 요청 조회" onClose={onClose} size="2xl">
+        <p className="text-sm text-gray-600 mb-6">
+          고객이 토큰을 사용하여 요청한 피드백 목록입니다.
+        </p>
 
         {loading && feedbacks.length === 0 && (
           <div className="py-12 text-center text-gray-500">로딩 중...</div>
@@ -209,7 +200,6 @@ export default function TokenUsedFeedbackModal({ onClose }: TokenUsedFeedbackMod
           <span>총 {feedbacks.length}개의 피드백 요청</span>
           {hasNext && <span>스크롤하여 더 많은 항목을 확인하세요</span>}
         </div>
-      </div>
     </CustomModal>
   );
 }

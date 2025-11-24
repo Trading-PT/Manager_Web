@@ -123,10 +123,10 @@ export default function FeedbackDetailPage() {
     if (!feedbackDetail) return null;
 
     const { investmentType, membershipLevel } = feedbackDetail;
-    const isBasicOrBefore = membershipLevel === 'BASIC' || membershipLevel === 'BEFORE_COMPLETION';
+    const isBasicMember = membershipLevel === 'BASIC';
 
-    // 무료 회원 또는 완강 전 회원
-    if (isBasicOrBefore && feedbackDetail.dayDetail) {
+    // 무료(BASIC) 회원
+    if (isBasicMember && feedbackDetail.dayDetail) {
       return <BasicDetailView data={feedbackDetail.dayDetail} />;
     }
 

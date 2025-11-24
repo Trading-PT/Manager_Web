@@ -276,10 +276,8 @@ export default function ComplaintsPage() {
 
       {/* 민원 상세 모달 */}
       {showDetailModal && selectedComplaint && (
-        <CustomModal onClose={handleCloseModal}>
-          <div className="p-6 max-w-4xl">
-            <div className="flex justify-between items-start mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">민원 상세</h2>
+        <CustomModal title="민원 상세" onClose={handleCloseModal} size="xl">
+            <div className="flex justify-end mb-4">
               <span
                 className={`px-3 py-1 text-sm font-semibold rounded-full ${
                   selectedComplaint.status === 'ANSWERED'
@@ -398,7 +396,6 @@ export default function ComplaintsPage() {
                 )}
               </div>
             </div>
-          </div>
         </CustomModal>
       )}
     </div>

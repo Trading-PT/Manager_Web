@@ -360,113 +360,109 @@ export default function AssistantsPage() {
 
       {/* 트레이너 추가 모달 */}
       {showCreateModal && (
-        <CustomModal onClose={() => setShowCreateModal(false)}>
-          <div className="p-6 max-w-2xl">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">트레이너 추가</h2>
-
-            <div className="space-y-4">
-              {/* 프로필 이미지 */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  프로필 이미지 (선택사항)
-                </label>
-                <div className="flex items-center space-x-4">
-                  {profileImagePreview ? (
-                    <img
-                      src={profileImagePreview}
-                      alt="Preview"
-                      className="w-20 h-20 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">이미지</span>
-                    </div>
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="text-sm text-gray-600"
+        <CustomModal title="트레이너 추가" onClose={() => setShowCreateModal(false)}>
+          <div className="space-y-4">
+            {/* 프로필 이미지 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                프로필 이미지 (선택사항)
+              </label>
+              <div className="flex items-center space-x-4">
+                {profileImagePreview ? (
+                  <img
+                    src={profileImagePreview}
+                    alt="Preview"
+                    className="w-20 h-20 rounded-full object-cover"
                   />
-                </div>
-              </div>
-
-              <CustomInput
-                label="성함*"
-                placeholder="이름을 입력하세요"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-              />
-
-              <CustomInput
-                label="전화번호* (숫자만 10-11자리)"
-                placeholder="01012345678"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                required
-              />
-
-              <CustomInput
-                label="아이디*"
-                placeholder="로그인 ID"
-                value={formData.username}
-                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                required
-              />
-
-              <CustomInput
-                type="password"
-                label="비밀번호*"
-                placeholder="비밀번호"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-              />
-
-              <CustomInput
-                type="password"
-                label="비밀번호 확인*"
-                placeholder="비밀번호 확인"
-                value={formData.passwordCheck}
-                onChange={(e) => setFormData({ ...formData, passwordCheck: e.target.value })}
-                required
-              />
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  한줄소개 (선택사항)
-                </label>
-                <textarea
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="한줄소개를 입력하세요"
-                  value={formData.onelineIntroduction}
-                  onChange={(e) =>
-                    setFormData({ ...formData, onelineIntroduction: e.target.value })
-                  }
-                  rows={2}
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-400">이미지</span>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="text-sm text-gray-600"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">권한*</label>
-                <select
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  value={formData.grantRole}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      grantRole: e.target.value as 'ROLE_ADMIN' | 'ROLE_TRAINER',
-                    })
-                  }
-                >
-                  <option value="ROLE_TRAINER">트레이너</option>
-                  <option value="ROLE_ADMIN">관리자</option>
-                </select>
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+            <CustomInput
+              label="성함*"
+              placeholder="이름을 입력하세요"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+            />
+
+            <CustomInput
+              label="전화번호* (숫자만 10-11자리)"
+              placeholder="01012345678"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              required
+            />
+
+            <CustomInput
+              label="아이디*"
+              placeholder="로그인 ID"
+              value={formData.username}
+              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              required
+            />
+
+            <CustomInput
+              type="password"
+              label="비밀번호*"
+              placeholder="비밀번호"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              required
+            />
+
+            <CustomInput
+              type="password"
+              label="비밀번호 확인*"
+              placeholder="비밀번호 확인"
+              value={formData.passwordCheck}
+              onChange={(e) => setFormData({ ...formData, passwordCheck: e.target.value })}
+              required
+            />
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                한줄소개 (선택사항)
+              </label>
+              <textarea
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="한줄소개를 입력하세요"
+                value={formData.onelineIntroduction}
+                onChange={(e) =>
+                  setFormData({ ...formData, onelineIntroduction: e.target.value })
+                }
+                rows={2}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">권한*</label>
+              <select
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={formData.grantRole}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    grantRole: e.target.value as 'ROLE_ADMIN' | 'ROLE_TRAINER',
+                  })
+                }
+              >
+                <option value="ROLE_TRAINER">트레이너</option>
+                <option value="ROLE_ADMIN">관리자</option>
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
               <CustomButton variant="secondary" onClick={() => setShowCreateModal(false)}>
                 취소
               </CustomButton>
@@ -480,111 +476,107 @@ export default function AssistantsPage() {
 
       {/* 트레이너 수정 모달 */}
       {showEditModal && selectedTrainer && (
-        <CustomModal onClose={() => setShowEditModal(false)}>
-          <div className="p-6 max-w-2xl">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">트레이너 수정</h2>
-
-            <div className="space-y-4">
-              {/* 프로필 이미지 */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  프로필 이미지
-                </label>
-                <div className="flex items-center space-x-4">
-                  {profileImagePreview ? (
-                    <img
-                      src={profileImagePreview}
-                      alt="Preview"
-                      className="w-20 h-20 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-400">이미지</span>
-                    </div>
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="text-sm text-gray-600"
+        <CustomModal title="트레이너 수정" onClose={() => setShowEditModal(false)}>
+          <div className="space-y-4">
+            {/* 프로필 이미지 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                프로필 이미지
+              </label>
+              <div className="flex items-center space-x-4">
+                {profileImagePreview ? (
+                  <img
+                    src={profileImagePreview}
+                    alt="Preview"
+                    className="w-20 h-20 rounded-full object-cover"
                   />
-                </div>
-              </div>
-
-              <CustomInput
-                label="성함*"
-                placeholder="이름을 입력하세요"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-              />
-
-              <CustomInput
-                label="전화번호* (숫자만 10-11자리)"
-                placeholder="01012345678"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                required
-              />
-
-              <CustomInput
-                label="아이디*"
-                placeholder="로그인 ID"
-                value={formData.username}
-                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                required
-              />
-
-              <CustomInput
-                type="password"
-                label="비밀번호 (변경시에만 입력)"
-                placeholder="새 비밀번호"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              />
-
-              <CustomInput
-                type="password"
-                label="비밀번호 확인 (변경시에만 입력)"
-                placeholder="새 비밀번호 확인"
-                value={formData.passwordCheck}
-                onChange={(e) => setFormData({ ...formData, passwordCheck: e.target.value })}
-              />
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  한줄소개
-                </label>
-                <textarea
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="한줄소개를 입력하세요"
-                  value={formData.onelineIntroduction}
-                  onChange={(e) =>
-                    setFormData({ ...formData, onelineIntroduction: e.target.value })
-                  }
-                  rows={2}
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-400">이미지</span>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="text-sm text-gray-600"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">권한*</label>
-                <select
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  value={formData.grantRole}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      grantRole: e.target.value as 'ROLE_ADMIN' | 'ROLE_TRAINER',
-                    })
-                  }
-                >
-                  <option value="ROLE_TRAINER">트레이너</option>
-                  <option value="ROLE_ADMIN">관리자</option>
-                </select>
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+            <CustomInput
+              label="성함*"
+              placeholder="이름을 입력하세요"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+            />
+
+            <CustomInput
+              label="전화번호* (숫자만 10-11자리)"
+              placeholder="01012345678"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              required
+            />
+
+            <CustomInput
+              label="아이디*"
+              placeholder="로그인 ID"
+              value={formData.username}
+              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              required
+            />
+
+            <CustomInput
+              type="password"
+              label="비밀번호 (변경시에만 입력)"
+              placeholder="새 비밀번호"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            />
+
+            <CustomInput
+              type="password"
+              label="비밀번호 확인 (변경시에만 입력)"
+              placeholder="새 비밀번호 확인"
+              value={formData.passwordCheck}
+              onChange={(e) => setFormData({ ...formData, passwordCheck: e.target.value })}
+            />
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                한줄소개
+              </label>
+              <textarea
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="한줄소개를 입력하세요"
+                value={formData.onelineIntroduction}
+                onChange={(e) =>
+                  setFormData({ ...formData, onelineIntroduction: e.target.value })
+                }
+                rows={2}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">권한*</label>
+              <select
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                value={formData.grantRole}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    grantRole: e.target.value as 'ROLE_ADMIN' | 'ROLE_TRAINER',
+                  })
+                }
+              >
+                <option value="ROLE_TRAINER">트레이너</option>
+                <option value="ROLE_ADMIN">관리자</option>
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
               <CustomButton variant="secondary" onClick={() => setShowEditModal(false)}>
                 취소
               </CustomButton>
@@ -598,40 +590,25 @@ export default function AssistantsPage() {
 
       {/* 배정 고객 목록 모달 */}
       {showCustomersModal && selectedTrainer && (
-        <CustomModal onClose={() => setShowCustomersModal(false)}>
-          <div className="p-6 max-w-2xl">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              {selectedTrainer.name} - 배정 고객 목록
-            </h2>
-
-            <div className="space-y-2">
-              {assignedCustomers.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">배정된 고객이 없습니다.</p>
-              ) : (
-                <div className="border border-gray-200 rounded-lg divide-y divide-gray-200">
-                  {assignedCustomers.map((customer) => (
-                    <div
-                      key={customer.customerId}
-                      className="p-4 flex justify-between items-center hover:bg-gray-50"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900">{customer.name}</p>
-                        <p className="text-sm text-gray-500">ID: {customer.customerId}</p>
-                      </div>
+        <CustomModal title={`${selectedTrainer.name} - 배정 고객 목록`} onClose={() => setShowCustomersModal(false)}>
+          <div className="space-y-2">
+            {assignedCustomers.length === 0 ? (
+              <p className="text-gray-500 text-center py-8">배정된 고객이 없습니다.</p>
+            ) : (
+              <div className="border border-gray-200 rounded-lg divide-y divide-gray-200">
+                {assignedCustomers.map((customer) => (
+                  <div
+                    key={customer.customerId}
+                    className="p-4 flex justify-between items-center hover:bg-gray-50"
+                  >
+                    <div>
+                      <p className="font-medium text-gray-900">{customer.name}</p>
+                      <p className="text-sm text-gray-500">ID: {customer.customerId}</p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-end mt-6 pt-4 border-t border-gray-200">
-              <CustomButton
-                variant="secondary"
-                onClick={() => setShowCustomersModal(false)}
-              >
-                닫기
-              </CustomButton>
-            </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </CustomModal>
       )}

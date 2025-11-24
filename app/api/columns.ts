@@ -1,4 +1,4 @@
-import { apiCall, getIsMockMode, mockData } from './base';
+import { apiCall, getIsMockMode } from './base';
 import type { ApiResponse } from './base';
 
 // Types
@@ -107,14 +107,14 @@ export async function getColumns(params?: {
           resolve({
             success: true,
             data: {
-              content: mockData.mockColumns || [],
-              totalElements: (mockData.mockColumns || []).length,
+              content: [],
+              totalElements: 0,
               totalPages: 1,
               size: params?.size || 20,
               number: params?.page || 0,
               first: true,
               last: true,
-              empty: (mockData.mockColumns || []).length === 0,
+              empty: true,
             },
           }),
         300
@@ -137,17 +137,9 @@ export async function getColumns(params?: {
 export async function getColumnDetail(columnId: number): Promise<ApiResponse<ColumnDetail>> {
   if (getIsMockMode()) {
     return new Promise((resolve) => {
-      const column = (mockData.mockColumns || []).find((c: Column) => c.id === columnId);
       setTimeout(
         () =>
-          resolve(
-            column
-              ? {
-                  success: true,
-                  data: { ...column, comments: mockData.mockColumnComments || [] },
-                }
-              : { success: false, error: 'Not found' }
-          ),
+          resolve({ success: false, error: 'Not found' }),
         300
       );
     });
@@ -214,7 +206,7 @@ export async function getCategories(): Promise<ApiResponse<ColumnCategory[]>> {
         () =>
           resolve({
             success: true,
-            data: mockData.mockColumnCategories || [],
+            data: [],
           }),
         300
       )

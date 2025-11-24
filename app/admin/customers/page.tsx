@@ -1,25 +1,25 @@
 'use client';
 import AdminHeader from '../../components/AdminHeader';
-import CustomModal from '../../components/CustomModal';
 import CustomButton from '../../components/CustomButton';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useCustomersData } from './hooks/useCustomersData';
 import PendingUsersTable from './PendingUsersTable';
 import ConsultationsTable from './ConsultationsTable';
 import InvestmentTypeChangeTable from './InvestmentTypeChangeTable';
 import TokenUsedFeedbackModal from './TokenUsedFeedbackModal';
-// import CustomerStats from './CustomerStats';
 import ConsultationMemoModal from './ConsultationMemoModal';
+import UserSearchSection from './UserSearchSection';
+import NewSubscriptionCustomersTable from './NewSubscriptionCustomersTable';
+import FreeCustomersTable from './FreeCustomersTable';
 import {
   getPendingChangeRequests,
   processChangeRequest,
   type ChangeRequest,
 } from '../../api/investmentTypeChange';
-// import * as api from '../../api/serverCall';
 
 
 export default function CustomersPage() {
-  const { newUsers, consultations, loading, setConsultations, setNewUsers, updateUserApprovalStatus } = useCustomersData();
+  const { newUsers, consultations, loading, setConsultations, setNewUsers, updateUserApprovalStatus, refreshPendingUsers } = useCustomersData();
   const [showModal, setShowModal] = useState(false);
   const [memoText, setMemoText] = useState('');
   const [currentId, setCurrentId] = useState<number | null>(null);
@@ -97,8 +97,6 @@ export default function CustomersPage() {
     <div className="min-h-screen bg-gray-50">
       <AdminHeader />
       <main className="max-w-[1920px] mx-auto px-6 py-8">
-        {/* {loading && <p>로딩 중...</p>} */}
-
         {/* 토큰 차감형 피드백 요청 조회 버튼 */}
         <div className="mb-6 flex justify-end">
           <CustomButton
@@ -109,17 +107,34 @@ export default function CustomersPage() {
           </CustomButton>
         </div>
 
-        <PendingUsersTable newUsers={newUsers} onStatusChange={updateUserApprovalStatus} />
+        {/* 회원 검색 섹션 */}
+        <UserSearchSection />
+
+        {/* 신규 가입자 UID 승인 처리 */}
+        <PendingUsersTable
+          newUsers={newUsers}
+          onStatusChange={updateUserApprovalStatus}
+          onRefresh={refreshPendingUsers}
+        />
+
+        {/* 신규 구독 고객 목록 */}
+        <NewSubscriptionCustomersTable />
+
+        {/* 미구독 (무료) 고객 목록 */}
+        <FreeCustomersTable />
+
+        {/* 투자 유형 변경 신청 */}
         <InvestmentTypeChangeTable
           changeRequests={changeRequests}
           onProcess={handleProcessChangeRequest}
         />
+
+        {/* 상담 신청 목록 */}
         <ConsultationsTable
           consultations={consultations}
           onToggle={handleConsultationToggle}
           onShowMemo={handleShowMemo}
         />
-        {/* <CustomerStats /> */}
       </main>
 
       {showModal && (

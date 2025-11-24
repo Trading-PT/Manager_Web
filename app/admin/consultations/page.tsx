@@ -331,53 +331,49 @@ export default function ConsultationsPage() {
 
       {/* 메모 모달 */}
       {showMemoModal && selectedConsultation && (
-        <CustomModal onClose={() => setShowMemoModal(false)}>
-          <div className="p-6 max-w-2xl">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">상담 메모</h2>
-
-            <div className="space-y-4">
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">상담 정보</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">신청자</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {selectedConsultation.customerName}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">전화번호</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {selectedConsultation.customerPhoneNumber}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">상담 날짜</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {formatDate(selectedConsultation.date)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">상담 시간</p>
-                    <p className="text-sm font-medium text-gray-900">
-                      {formatTimeString(selectedConsultation.time)}
-                    </p>
-                  </div>
+        <CustomModal title="상담 메모" onClose={() => setShowMemoModal(false)}>
+          <div className="space-y-4">
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">상담 정보</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">신청자</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {selectedConsultation.customerName}
+                  </p>
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">메모</label>
-                <textarea
-                  className="w-full min-h-[150px] p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                  placeholder="상담 관련 메모를 입력하세요..."
-                  value={memoText}
-                  onChange={(e) => setMemoText(e.target.value)}
-                />
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">전화번호</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {selectedConsultation.customerPhoneNumber}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">상담 날짜</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {formatDate(selectedConsultation.date)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">상담 시간</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {formatTimeString(selectedConsultation.time)}
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">메모</label>
+              <textarea
+                className="w-full min-h-[150px] p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                placeholder="상담 관련 메모를 입력하세요..."
+                value={memoText}
+                onChange={(e) => setMemoText(e.target.value)}
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
               <CustomButton variant="secondary" onClick={() => setShowMemoModal(false)}>
                 취소
               </CustomButton>
@@ -391,66 +387,62 @@ export default function ConsultationsPage() {
 
       {/* 슬롯 차단 관리 모달 */}
       {showBlockModal && (
-        <CustomModal onClose={() => setShowBlockModal(false)}>
-          <div className="p-6 max-w-2xl">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">상담 슬롯 차단 관리</h2>
+        <CustomModal title="상담 슬롯 차단 관리" onClose={() => setShowBlockModal(false)}>
+          <div className="space-y-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="text-sm font-semibold text-blue-900 mb-2">안내</h3>
+              <p className="text-sm text-blue-800">
+                특정 날짜와 시간대를 차단하면 고객이 해당 시간에 상담을 신청할 수 없습니다.
+                <br />
+                차단을 해제하면 다시 예약이 가능해집니다.
+              </p>
+            </div>
 
-            <div className="space-y-6">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h3 className="text-sm font-semibold text-blue-900 mb-2">안내</h3>
-                <p className="text-sm text-blue-800">
-                  특정 날짜와 시간대를 차단하면 고객이 해당 시간에 상담을 신청할 수 없습니다.
-                  <br />
-                  차단을 해제하면 다시 예약이 가능해집니다.
-                </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">날짜</label>
+                <input
+                  type="date"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={blockDate}
+                  onChange={(e) => setBlockDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                />
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">날짜</label>
-                  <input
-                    type="date"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={blockDate}
-                    onChange={(e) => setBlockDate(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">시간</label>
+                <select
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={blockTime}
+                  onChange={(e) => setBlockTime(e.target.value)}
+                >
+                  {AVAILABLE_TIME_SLOTS.map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">시간</label>
-                  <select
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={blockTime}
-                    onChange={(e) => setBlockTime(e.target.value)}
-                  >
-                    {AVAILABLE_TIME_SLOTS.map((time) => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2">
-                    사용 가능한 상담 시간대
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {AVAILABLE_TIME_SLOTS.map((time) => (
-                      <span
-                        key={time}
-                        className="inline-flex px-3 py-1 text-xs font-medium bg-white border border-gray-300 rounded-full"
-                      >
-                        {time}
-                      </span>
-                    ))}
-                  </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                  사용 가능한 상담 시간대
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {AVAILABLE_TIME_SLOTS.map((time) => (
+                    <span
+                      key={time}
+                      className="inline-flex px-3 py-1 text-xs font-medium bg-white border border-gray-300 rounded-full"
+                    >
+                      {time}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
               <CustomButton variant="secondary" onClick={() => setShowBlockModal(false)}>
                 취소
               </CustomButton>

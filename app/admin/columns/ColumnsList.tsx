@@ -40,7 +40,7 @@ export default function ColumnsList({
         `"${column.title}" 칼럼을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`
       )
     ) {
-      onDelete(column.id);
+      onDelete(column.columnId);
     }
   };
 
@@ -50,7 +50,7 @@ export default function ColumnsList({
       : `"${column.title}" 칼럼을 베스트로 지정하시겠습니까?`;
 
     if (confirm(message)) {
-      onToggleBest(column.id, !column.isBest);
+      onToggleBest(column.columnId, !column.isBest);
     }
   };
 

@@ -82,18 +82,11 @@ export default function GradingModal({ attemptId, onClose }: GradingModalProps) 
   };
 
   return (
-    <CustomModal onClose={() => onClose(false)}>
-      <div className="p-6 max-w-5xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">레벨테스트 채점</h2>
-            <p className="text-sm text-gray-600 mt-1">
-              응시자: {customerName} | 현재 점수: {totalScore}점
-            </p>
-          </div>
-          <CustomButton variant="secondary" onClick={() => onClose(false)}>
-            닫기
-          </CustomButton>
+    <CustomModal title="레벨테스트 채점" onClose={() => onClose(false)} size="2xl">
+        <div className="mb-4">
+          <p className="text-sm text-gray-600">
+            응시자: {customerName} | 현재 점수: {totalScore}점
+          </p>
         </div>
 
         {loading && <p className="text-center py-4 text-gray-500">로딩 중...</p>}
@@ -187,7 +180,7 @@ export default function GradingModal({ attemptId, onClose }: GradingModalProps) 
           ))}
         </div>
 
-        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
           <CustomButton variant="secondary" onClick={() => onClose(false)}>
             취소
           </CustomButton>
@@ -195,7 +188,6 @@ export default function GradingModal({ attemptId, onClose }: GradingModalProps) 
             {loading ? '처리 중...' : '채점 완료'}
           </CustomButton>
         </div>
-      </div>
     </CustomModal>
   );
 }

@@ -171,64 +171,62 @@ export default function CategoryManagement({
 
       {/* 카테고리 생성/수정 모달 */}
       {showModal && (
-        <CustomModal onClose={handleCloseModal}>
-          <div className="p-6 max-w-md">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              {editingCategory ? '카테고리 수정' : '새 카테고리 추가'}
-            </h2>
+        <CustomModal
+          title={editingCategory ? '카테고리 수정' : '새 카테고리 추가'}
+          onClose={handleCloseModal}
+          size="md"
+        >
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                카테고리 이름 <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="예: ETF, 주식, 투자 전략"
+                required
+              />
+            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  카테고리 이름 <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="예: ETF, 주식, 투자 전략"
-                  required
-                />
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                카테고리 색상 <span className="text-red-500">*</span>
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {colorOptions.map((colorOption) => (
+                  <button
+                    key={colorOption.value}
+                    type="button"
+                    onClick={() => setColor(colorOption.value)}
+                    className={`flex items-center gap-2 px-3 py-2 border rounded-lg transition-all ${
+                      color === colorOption.value
+                        ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    <span className={`w-4 h-4 rounded-full ${colorOption.class}`}></span>
+                    <span className="text-sm">{colorOption.label}</span>
+                  </button>
+                ))}
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  카테고리 색상 <span className="text-red-500">*</span>
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {colorOptions.map((colorOption) => (
-                    <button
-                      key={colorOption.value}
-                      type="button"
-                      onClick={() => setColor(colorOption.value)}
-                      className={`flex items-center gap-2 px-3 py-2 border rounded-lg transition-all ${
-                        color === colorOption.value
-                          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500'
-                          : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                    >
-                      <span className={`w-4 h-4 rounded-full ${colorOption.class}`}></span>
-                      <span className="text-sm">{colorOption.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-                <CustomButton
-                  variant="secondary"
-                  onClick={handleCloseModal}
-                  disabled={isSubmitting}
-                >
-                  취소
-                </CustomButton>
-                <CustomButton variant="primary" type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? '저장 중...' : editingCategory ? '수정' : '추가'}
-                </CustomButton>
-              </div>
-            </form>
-          </div>
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+              <CustomButton
+                variant="secondary"
+                onClick={handleCloseModal}
+                disabled={isSubmitting}
+              >
+                취소
+              </CustomButton>
+              <CustomButton variant="primary" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? '저장 중...' : editingCategory ? '수정' : '추가'}
+              </CustomButton>
+            </div>
+          </form>
         </CustomModal>
       )}
     </div>

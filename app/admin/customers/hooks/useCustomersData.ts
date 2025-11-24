@@ -113,6 +113,11 @@ const loadPendingUsers = async () => {
 };
 
 
+  // 신규 가입자 목록 새로고침
+  const refreshPendingUsers = () => {
+    loadPendingUsers();
+  };
+
   return {
     newUsers,
     consultations,
@@ -123,5 +128,6 @@ const loadPendingUsers = async () => {
     setConsultations,
     setNewUsers,
     updateUserApprovalStatus,
+    refreshPendingUsers,
   };
 }

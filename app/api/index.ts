@@ -11,3 +11,4 @@ export * from './trainers';
 export * from './reviews';
 export * from './investmentTypeChange';
 export * from './leveltest';
+export * from './events';

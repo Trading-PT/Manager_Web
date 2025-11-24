@@ -203,10 +203,7 @@ export default function InvestmentTypeChangeTable({
 
       {/* 상세보기 모달 */}
       {showDetailModal && selectedRequest && (
-        <CustomModal onClose={() => setShowDetailModal(false)}>
-          <div className="p-6 max-w-2xl">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">투자 유형 변경 신청 상세</h2>
-
+        <CustomModal title="투자 유형 변경 신청 상세" onClose={() => setShowDetailModal(false)} size="lg">
             <div className="space-y-6">
               {/* 고객 정보 */}
               <div className="bg-gray-50 rounded-lg p-4">
@@ -308,7 +305,7 @@ export default function InvestmentTypeChangeTable({
             </div>
 
             {/* 버튼 영역 */}
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
               <CustomButton variant="secondary" onClick={() => setShowDetailModal(false)}>
                 닫기
               </CustomButton>
@@ -326,16 +323,12 @@ export default function InvestmentTypeChangeTable({
                 </>
               )}
             </div>
-          </div>
         </CustomModal>
       )}
 
       {/* 거부 사유 입력 모달 */}
       {showRejectModal && selectedRequest && (
-        <CustomModal onClose={() => setShowRejectModal(false)}>
-          <div className="p-6 max-w-lg">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">신청 거부</h2>
-
+        <CustomModal title="신청 거부" onClose={() => setShowRejectModal(false)} size="md">
             <div className="space-y-4">
               <p className="text-sm text-gray-600">
                 <span className="font-medium">{selectedRequest.customerName}</span>님의 투자 유형
@@ -355,7 +348,7 @@ export default function InvestmentTypeChangeTable({
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
               <CustomButton variant="secondary" onClick={() => setShowRejectModal(false)}>
                 취소
               </CustomButton>
@@ -363,7 +356,6 @@ export default function InvestmentTypeChangeTable({
                 거부 확정
               </CustomButton>
             </div>
-          </div>
         </CustomModal>
       )}
     </>

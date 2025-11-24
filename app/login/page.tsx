@@ -58,15 +58,25 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
-        <div>
-          <h2 className="text-center text-3xl font-bold text-gray-900">
-            TPT 운영 관리자
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            관리자 계정으로 로그인하세요
+      <div className="max-w-md w-full space-y-6 p-8">
+        {/* 데스크톱 안내 문구 */}
+        <div className="bg-red-50 border-2 border-red-500 rounded-lg p-4">
+          <p className="text-red-700 text-sm text-center font-medium">
+            관리자 사이트는 데스크톱 화면에 최적화되어있습니다.<br />
+            모바일이 아닌 데스크톱으로 접속하시길 바랍니다.
           </p>
         </div>
+
+        {/* 로그인 섹션 */}
+        <div className="bg-white rounded-xl shadow-lg p-8 space-y-8">
+          <div>
+            <h2 className="text-center text-3xl font-bold text-gray-900">
+              TPT 운영 관리자
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">
+              관리자 계정으로 로그인하세요
+            </p>
+          </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="space-y-4">
@@ -107,6 +117,7 @@ export default function LoginPage() {
             </CustomButton>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

@@ -129,12 +129,7 @@ export default function QuestionFormModal({ question, onClose }: QuestionFormMod
   };
 
   return (
-    <CustomModal onClose={() => onClose(false)}>
-      <div className="p-6 max-w-3xl w-full">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          {question ? '문제 수정' : '문제 생성'}
-        </h2>
-
+    <CustomModal title={question ? '문제 수정' : '문제 생성'} onClose={() => onClose(false)} size="lg">
         <div className="space-y-4">
           {/* 문제 유형 선택 (생성 시에만) */}
           {!question && (
@@ -260,7 +255,7 @@ export default function QuestionFormModal({ question, onClose }: QuestionFormMod
           )}
         </div>
 
-        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
           <CustomButton variant="secondary" onClick={() => onClose(false)}>
             취소
           </CustomButton>
@@ -268,7 +263,6 @@ export default function QuestionFormModal({ question, onClose }: QuestionFormMod
             {loading ? '처리 중...' : question ? '수정' : '생성'}
           </CustomButton>
         </div>
-      </div>
     </CustomModal>
   );
 }

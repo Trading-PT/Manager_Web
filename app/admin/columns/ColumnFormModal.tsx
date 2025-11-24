@@ -34,7 +34,7 @@ export default function ColumnFormModal({
   const [title, setTitle] = useState(column?.title || '');
   const [subtitle, setSubtitle] = useState(column?.subtitle || '');
   const [content, setContent] = useState(column?.content || '');
-  const [category, setCategory] = useState(column?.category || '');
+  const [category, setCategory] = useState(column?.categoryName || '');
   const [writerName, setWriterName] = useState(column?.writerName || '');
   const [fontFamily, setFontFamily] = useState(column?.fontFamily || 'default');
   const [thumbnailImage, setThumbnailImage] = useState<string>('');
@@ -148,13 +148,8 @@ export default function ColumnFormModal({
   };
 
   return (
-    <CustomModal onClose={onClose} size="xl">
-      <div className="p-6 max-w-5xl">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          {isEditMode ? '칼럼 수정' : '새 칼럼 작성'}
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <CustomModal title={isEditMode ? '칼럼 수정' : '새 칼럼 작성'} onClose={onClose} size="xl">
+      <form onSubmit={handleSubmit} className="space-y-6">
           {/* 제목 */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -303,7 +298,6 @@ export default function ColumnFormModal({
             </CustomButton>
           </div>
         </form>
-      </div>
     </CustomModal>
   );
 }
